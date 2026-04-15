@@ -1,34 +1,24 @@
 package co.edu.upb.proyectoAula;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Grafo {
-	private Map <Integer, List<Integer>> adyacencia;
+	private ArrayList<Nodo> nodos = new ArrayList<>();
+    private ArrayList<Arista> aristas = new ArrayList<>();
 
-	public Grafo() {
-		this.adyacencia = new HashMap<>();
-	}
-	
-	public void addNode (int origen) {
-		if (adyacencia.containsKey(origen) == false) {
-			adyacencia.put(origen, new ArrayList<>());
-		}
-	}
-	
-	public void addEdge(int origen, int destino) {
-		addNode(origen);
-		addNode(destino);
-		adyacencia.get(destino).add(origen);
-		adyacencia.get(origen).add(destino);
-	}
-	
-	public void showGraph() {
-		for (int nodo : adyacencia.keySet()) {
-			System.out.println(nodo + "-->" + adyacencia.get(nodo));
-		}
-	}
-	
+    public void agregarNodo(Nodo n) {
+        nodos.add(n);
+    }
+
+    public void agregarArista(Nodo a, Nodo b, int peso) {
+        aristas.add(new Arista(a, b, peso));
+    }
+
+    public ArrayList<Nodo> getNodos() { 
+    	return nodos; 
+    }
+    
+    public ArrayList<Arista> getAristas() { 
+    	return aristas; 
+    }
 }
