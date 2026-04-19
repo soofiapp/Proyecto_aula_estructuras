@@ -216,10 +216,10 @@ public class PanelGrafo extends JPanel{
             boolean enKruskal   = aristaEnKruskal(a);
 
             Color colorArista; float grosor;
-            if      (enDijkstra)  { colorArista = new Color(34, 180, 90);   grosor = 3.5f; }
-            else if (enAEstrella) { colorArista = new Color(0, 160, 220);   grosor = 3.5f; }
-            else if (enKruskal)   { colorArista = new Color(160, 80, 200);  grosor = 3.5f; }
-            else                  { colorArista = Color.GRAY;               grosor = 1.5f; }
+            if      (enDijkstra)  { colorArista = new Color(34, 180, 90);   grosor = 5.5f; }
+            else if (enAEstrella) { colorArista = new Color(0, 160, 220);   grosor = 5.5f; }
+            else if (enKruskal)   { colorArista = new Color(160, 80, 200);  grosor = 5.5f; }
+            else                  { colorArista = Color.GRAY;               grosor = 5.5f; }
 
             g2.setColor(colorArista);
             g2.setStroke(new BasicStroke(grosor));
@@ -230,14 +230,14 @@ public class PanelGrafo extends JPanel{
                             : enKruskal   ? new Color(120, 40, 180)
                             : new Color(180, 50, 50);
             g2.setColor(Color.WHITE);
-            g2.fillOval(mx - 12, my - 12, 24, 24);
+            //g2.fillOval(mx - 12, my - 12, 24, 24);
             g2.setColor(colorPeso);
             g2.setStroke(new BasicStroke(1.5f));
-            g2.drawOval(mx - 12, my - 12, 24, 24);
-            g2.setFont(new Font("Arial", Font.BOLD, 12));
+            // g2.drawOval(mx - 12, my - 12, 24, 24);
+            // g2.setFont(new Font("Arial", Font.BOLD, 12));
             FontMetrics fm = g2.getFontMetrics();
             String ps = String.valueOf(a.getPeso());
-            g2.drawString(ps, mx - fm.stringWidth(ps) / 2, my + 5);
+            // g2.drawString(ps, mx - fm.stringWidth(ps) / 2, my + 5);
         }
 
         // ── Nodos ─────────────────────────────────────────────

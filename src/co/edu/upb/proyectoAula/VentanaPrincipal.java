@@ -66,7 +66,7 @@ public class VentanaPrincipal extends JFrame{
     private void cargarGrafo(Grafo grafo) {
         HashMap<String, Nodo> n = new HashMap<>();
 
-        n.put("AA", new Nodo("AA", 30, 25));
+        n.put("AA", new Nodo("F", 30, 25));
         n.put("AB", new Nodo("AB", 80, 25));
         n.put("AC", new Nodo("AC", 130, 25));
         n.put("AE", new Nodo("AE", 230, 25));
@@ -78,7 +78,7 @@ public class VentanaPrincipal extends JFrame{
         n.put("AM", new Nodo("AM", 630, 25));
         n.put("AP", new Nodo("AP", 780, 25));
         n.put("AQ", new Nodo("AQ", 830, 25));
-        n.put("AR", new Nodo("AR", 880, 25));
+        n.put("AR", new Nodo("F", 880, 25));
         n.put("BA", new Nodo("BA", 30, 59));
         n.put("BB", new Nodo("BB", 80, 59));
         n.put("BD", new Nodo("BD", 180, 59));
@@ -264,7 +264,7 @@ public class VentanaPrincipal extends JFrame{
         n.put("OO", new Nodo("OO", 730, 501));
         n.put("OP", new Nodo("OP", 780, 501));
         n.put("OQ", new Nodo("OQ", 830, 501));
-        n.put("OR", new Nodo("OR", 880, 501));
+        n.put("OR", new Nodo("F", 880, 501));
         n.put("PA", new Nodo("PA", 30, 535));
         n.put("PC", new Nodo("PC", 130, 535));
         n.put("PE", new Nodo("PE", 230, 535));
@@ -293,7 +293,7 @@ public class VentanaPrincipal extends JFrame{
         n.put("QO", new Nodo("QO", 730, 569));
         n.put("QP", new Nodo("QP", 780, 569));
         n.put("QQ", new Nodo("QQ", 830, 569));
-        n.put("RA", new Nodo("RA", 30, 603));
+        n.put("RA", new Nodo("I", 30, 603)); //RA
         n.put("RB", new Nodo("RB", 80, 603));
         n.put("RC", new Nodo("RC", 130, 603));
         n.put("RF", new Nodo("RF", 280, 603));
@@ -305,8 +305,8 @@ public class VentanaPrincipal extends JFrame{
         n.put("RM", new Nodo("RM", 630, 603));
         n.put("RN", new Nodo("RN", 680, 603));
         n.put("RO", new Nodo("RO", 730, 603));
-        n.put("RQ", new Nodo("RQ", 830, 603));
-        n.put("RR", new Nodo("RR", 880, 603));
+        n.put("RQ", new Nodo("", 830, 603));
+        n.put("RR", new Nodo("F", 880, 603));
 
         for (Nodo nodo : n.values()) {
         	grafo.agregarNodo(nodo);
