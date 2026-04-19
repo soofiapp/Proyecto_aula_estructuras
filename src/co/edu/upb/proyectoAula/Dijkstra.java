@@ -63,42 +63,83 @@ public class Dijkstra {
      *   - camino     → secuencia de nodos del camino más corto
      * ─────────────────────────────────────────────────────────────────
      */
+    
     public static void ejecutar(Grafo grafo, Nodo origen, Nodo destino) {
         distancias.clear();
         anteriores.clear();
         camino.clear();
 
+        List<Nodo> pendientes = new ArrayList<>(grafo.getNodos());
+
         // ── PASO 1: Inicialización
-        // TODO: Asignar distancia INFINITO a todos los nodos
-        // TODO: Asignar null como nodo anterior para todos los nodos
-        // TODO: Asignar distancia 0 al nodo origen
-        // TODO: Crear la lista de nodos pendientes con todos los nodos del grafo
-
-
+        // Asignar distancia INFINITO a todos los nodos
+        // Asignar null como nodo anterior para todos los nodos
+        // Asignar distancia 0 al nodo origen
+        // Crear la lista de nodos pendientes con todos los nodos del grafo
+        
+        for (Nodo n : grafo.getNodos()) {
+            distancias.put(n, Integer.MAX_VALUE);
+            anteriores.put(n, null);
+        }
+        distancias.put(origen, 0);
 
         // ── PASO 2: Bucle principal
-        // TODO: Repetir mientras haya nodos en pendientes:
+        // Repetir mientras haya nodos en pendientes:
+        	//2a: Encontrar el nodo con menor distancia en pendientes
+        // recorrer todos los pendientes comparando distancias
 
-            // TODO 2a: Encontrar el nodo con menor distancia en pendientes
-            // Sugerencia: recorrer todos los pendientes comparando distancias
-
-
-            // TODO: Condición de parada — salir si no hay nodo alcanzable
-            //       o si ya llegamos al destino
+        //Condición de parada — salir si no hay nodo alcanzable o si ya llegamos al destino
 
 
-            // TODO 2b: Eliminar el nodo actual de pendientes
+            //2b: Eliminar el nodo actual de pendientes
 
 
-            // TODO 2c: Revisar cada arista del grafo
-            // Para cada arista, identificar si conecta con el nodo actual
+            // 2c: Revisar cada arista del grafo Para cada arista, identificar si conecta con el nodo actual
             // y si el vecino aún está en pendientes, relajar la distancia
 
 
+        while (!pendientes.isEmpty()) {
+            Nodo actual = null;
+            int menor = Integer.MAX_VALUE;
 
-        // ── PASO 3: Reconstrucción del camino ───────────────────────
-        // TODO: Recorrer el mapa "anteriores" desde destino hasta origen
-        //       e insertar cada nodo al inicio de la lista "camino"
+            for (Nodo n : pendientes) {
+                int d = distancias.get(n);
+                if (d < menor) {
+                    menor = d;
+                    actual = n;
+                }
+            }
 
+            if (actual == null || menor == Integer.MAX_VALUE) break; // no alcanzable
+            if (actual == destino) break; // primer destino encontrado con costo mínimo
+
+            pendientes.remove(actual);
+
+            for (Arista a : grafo.getAristas()) {
+                Nodo vecino = null;
+                if (a.getOrigen() == actual) vecino = a.getDestino();
+                else if (a.getDestino() == actual) vecino = a.getOrigen();
+
+                if (vecino != null && pendientes.contains(vecino)) {
+                    int nueva = distancias.get(actual) + a.getPeso();
+                    if (nueva < distancias.get(vecino)) {
+                        distancias.put(vecino, nueva);
+                        anteriores.put(vecino, actual);
+                    }
+                }
+            }
+        }
+
+        // ── PASO 3: Reconstrucción del camino
+        //Recorrer el mapa "anteriores" desde destino hasta origen e insertar cada nodo al inicio de la lista "camino"
+
+        if (distancias.get(destino) != Integer.MAX_VALUE) {
+            Nodo paso = destino;
+            while (paso != null) {
+                camino.add(0, paso);
+                paso = anteriores.get(paso);
+            }
+        }
     }
+
 }
