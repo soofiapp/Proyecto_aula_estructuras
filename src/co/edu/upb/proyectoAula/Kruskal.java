@@ -33,9 +33,12 @@ public class Kruskal {
      * ─────────────────────────────────────────────────────────────────
      */
     private static Nodo encontrar(Nodo n) {
-        // TODO: Implementar con compresión de caminos
-        //       Si padre[n] es distinto de n, aplicar recursión y comprimir
-        return null; // ← reemplazar con la implementación correcta
+        Nodo raiz = padre.get(n);
+        if (raiz != n) {
+            raiz = encontrar(raiz);
+            padre.put(n, raiz);
+        }
+        return raiz;
     }
 
 
@@ -104,24 +107,41 @@ public class Kruskal {
         aristasArbol.clear();
         pesoTotal = 0;
         padre.clear();
-
+        
+        
         // ── PASO 1: Inicializar Union-Find ───────────────────────────
-        // TODO: Asignar cada nodo como su propio padre
+        //Asignar cada nodo como su propio padre
 
-
+        for (Nodo nodo : grafo.getNodos()) {
+            padre.put(nodo, nodo);
+        }
 
         // ── PASO 2: Ordenar aristas por peso ────────────────────────
-        // TODO: Crear una copia de las aristas del grafo y ordenarlas
-        //       de menor a mayor usando Comparator.comparingInt(Arista::getPeso)
+        //Crear una copia de las aristas del grafo y ordenarlas de menor a mayor usando Comparator.comparingInt(Arista::getPeso)
+        
+        List<Arista> aristasOrdenadas = new ArrayList<>(grafo.getAristas());
+        aristasOrdenadas.sort(Comparator.comparingInt(Arista::getPeso));
+        int aristasNecesarias = Math.max(0, grafo.getNodos().size() - 1);
 
-
-
+        
         // ── PASO 3: Seleccionar aristas sin formar ciclos ────────────
-        // TODO: Recorrer las aristas ordenadas
-        //       Para cada una, verificar si sus extremos están
-        //       en componentes distintas (usar encontrar)
-        //       Si es así: agregar al árbol, sumar peso y unir componentes
+        // Recorrer las aristas ordenadas
+        
+        for (Arista arista : aristasOrdenadas) {
+            Nodo u = arista.getOrigen();
+            Nodo v = arista.getDestino();
 
+            if (encontrar(u) != encontrar(v)) {	//Para cada una, verificar si sus extremos están en componentes distintas (usar encontrar)
+
+                aristasArbol.add(arista);					   //Si es así: agregar al árbol, sumar peso y unir componentes
+                pesoTotal += arista.getPeso();
+                unir(u, v);
+
+                if (aristasArbol.size() == aristasNecesarias) {
+                    break;
+                }
+            }
+        }
 
     }
 }
