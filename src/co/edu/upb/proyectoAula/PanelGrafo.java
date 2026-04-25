@@ -21,6 +21,8 @@ public class PanelGrafo extends JPanel{
     private String       modoActual      = "";
 
     private Timer timerAnimacion;
+    
+  
 
     public PanelGrafo(Grafo grafo) {
         this.grafo = grafo;
