@@ -350,17 +350,19 @@ public class PanelGrafo extends JPanel {
  
     // ── Dijkstra -------------------
     public void ejecutarDijkstra(PanelTabla panelTabla) {
-        limpiar();
+    	limpiar();
         List<Nodo> nodos = grafo.getNodos();
         if (nodos.size() < 2) { JOptionPane.showMessageDialog(this,"Necesitas al menos 2 nodos."); return; }
+        
+        String origenId = "RA";
+        Nodo origen = buscarPorId(origenId);
+        if (origen == null) { JOptionPane.showMessageDialog(this,"No existe el nodo RA."); return; }
+        
         String[] nombres = nodos.stream().map(Nodo::getId).toArray(String[]::new);
-        String origenId = (String) JOptionPane.showInputDialog(this,"Nodo ORIGEN:","Dijkstra",
-            JOptionPane.PLAIN_MESSAGE,null,nombres,nombres[0]);
-        if (origenId == null) return;
         String destinoId = (String) JOptionPane.showInputDialog(this,"Nodo DESTINO:","Dijkstra",
             JOptionPane.PLAIN_MESSAGE,null,nombres,nombres[nombres.length-1]);
         if (destinoId == null) return;
-        Nodo origen  = buscarPorId(origenId);
+        
         Nodo destino = buscarPorId(destinoId);
         if (origen == destino) { JOptionPane.showMessageDialog(this,"Origen y destino iguales."); return; }
         Dijkstra.ejecutar(grafo, origen, destino);

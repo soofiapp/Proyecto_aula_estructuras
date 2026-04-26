@@ -292,7 +292,7 @@ public class VentanaPrincipal extends JFrame{
         n.put("QO", new Nodo("QO", 730, 569));
         n.put("QP", new Nodo("QP", 780, 569));
         n.put("QQ", new Nodo("QQ", 830, 569));
-        n.put("RA", new Nodo("I", 30, 603)); //RA
+        n.put("RA", new Nodo("RA", 30, 603)); 
         n.put("RB", new Nodo("RB", 80, 603));
         n.put("RF", new Nodo("RF", 280, 603));
         n.put("RG", new Nodo("RG", 330, 603));
@@ -534,7 +534,7 @@ public class VentanaPrincipal extends JFrame{
         n.put("QO", new Nodo("QO", 800, 651));
         n.put("QP", new Nodo("QP", 855, 651));
         n.put("QQ", new Nodo("QQ", 910, 651));
-        n.put("RA", new Nodo("I", 30, 690)); //RA
+        n.put("RA", new Nodo("RA", 30, 690)); //RA
         n.put("RB", new Nodo("RB", 85, 690));
         n.put("RE", new Nodo("RE", 250, 690));
         n.put("RF", new Nodo("RF", 305, 690));
