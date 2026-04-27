@@ -10,6 +10,10 @@ public class VentanaPrincipal extends JFrame{
 	public VentanaPrincipal() {
         Grafo grafo = new Grafo();
         cargarGrafo(grafo);
+        
+        MatrizAdyacencia matrizAdj = new MatrizAdyacencia(grafo);
+        matrizAdj.imprimir(); // opcional, para verificar en consola
+
 
         PanelGrafo     panelGrafo   = new PanelGrafo(grafo);
         PanelTabla     panelDijkstra= new PanelTabla();

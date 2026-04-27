@@ -343,7 +343,7 @@ public class PanelGrafo extends JPanel {
                 g2.setFont(new Font("Arial", Font.PLAIN, 12));
                 g2.drawString(nodoSeleccionado == null
                     ? ""
-                    : "Seleccionado: "+nodoSeleccionado.getId()+"  →  Clic en otro nodo para conectar",
+                    : "Seleccionado: "+nodoSeleccionado.getId()+"Clic en otro nodo para conectar",
                     10, panelH-10);
         }
     }
