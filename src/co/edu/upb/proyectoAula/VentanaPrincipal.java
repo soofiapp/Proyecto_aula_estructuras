@@ -14,16 +14,18 @@ public class VentanaPrincipal extends JFrame{
         MatrizAdyacencia matrizAdj = new MatrizAdyacencia(grafo);
         matrizAdj.imprimir(); // opcional, para verificar en consola
 
-
+        PanelGrafo panelMapa = new PanelGrafo(grafo);
         PanelGrafo     panelGrafo   = new PanelGrafo(grafo);
         PanelTabla     panelDijkstra= new PanelTabla();
         PanelKruskal   panelKruskal = new PanelKruskal();
+        
         
         //  Pestañas
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Grafo",     panelGrafo);
         tabs.addTab("Dijkstra",  panelDijkstra);
         tabs.addTab("Kruskal",   panelKruskal);
+        tabs.addTab("Adyacencia",     panelMapa); 
         
         //  Botones 
         JButton btnDijkstra = crearBoton("▶ Dijkstra",     new Color(34,  150,  80));
