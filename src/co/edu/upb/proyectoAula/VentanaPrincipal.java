@@ -2,24 +2,22 @@ package co.edu.upb.proyectoAula;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.util.HashMap;
 
-public class VentanaPrincipal extends JFrame{
-	
-	public VentanaPrincipal() {
+public class VentanaPrincipal extends JFrame {
+
+    public VentanaPrincipal() {
         Grafo grafo = new Grafo();
         cargarGrafo(grafo);
-        
-        
-        // ── Matriz de adyacencia ──────────────────────────────
+
+        // Tabla de adyacencia 
         String[] letras = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R"};
         HashMap<String, Nodo> mapa = new HashMap<>();
         for (Nodo nd : grafo.getNodos()) mapa.put(nd.getId(), nd);
 
         DefaultTableModel modeloAdj = new DefaultTableModel();
-        modeloAdj.addColumn("I\\→");
+        modeloAdj.addColumn("  ");
         for (String col : letras) modeloAdj.addColumn(col);
 
         for (String fila : letras) {
@@ -28,9 +26,9 @@ public class VentanaPrincipal extends JFrame{
             for (int j = 0; j < letras.length; j++) {
                 String id = fila + letras[j];
                 if (mapa.containsKey(id)) {
-                    if (id.equals("RA"))                          row[j+1] = "I";
-                    else if (!mapa.get(id).getId().equals(id))   row[j+1] = "F";
-                    else                                          row[j+1] = "1";
+                    if (id.equals("RA"))                        row[j+1] = "I";
+                    else if (!mapa.get(id).getId().equals(id)) row[j+1] = "F";
+                    else                                        row[j+1] = "1";
                 } else {
                     row[j+1] = "0";
                 }
@@ -59,47 +57,48 @@ public class VentanaPrincipal extends JFrame{
                     setBackground(new Color(50, 100, 160));
                     setForeground(Color.WHITE);
                     setFont(getFont().deriveFont(Font.BOLD));
-                } else switch (v) {
-                    case "1": setBackground(new Color(200,230,200)); setForeground(new Color(20,100,20));   break;
-                    case "0": setBackground(new Color(245,245,245)); setForeground(new Color(180,180,180)); break;
-                    case "I": setBackground(new Color(255,220,80));  setForeground(new Color(120,80,0));    break;
-                    case "F": setBackground(new Color(210,80,80));   setForeground(Color.WHITE);            break;
+                } else {
+                    switch (v) {
+                        case "1": setBackground(new Color(200,230,200)); setForeground(new Color(20,100,20));   break;
+                        case "0": setBackground(new Color(245,245,245)); setForeground(new Color(180,180,180)); break;
+                        case "I": setBackground(new Color(255,220,80));  setForeground(new Color(120,80,0));    break;
+                        case "F": setBackground(new Color(210,80,80));   setForeground(Color.WHITE);            break;
+                        default:  setBackground(Color.WHITE);            setForeground(Color.BLACK);            break;
+                    }
                 }
                 return this;
             }
         });
-        JScrollPane scrollAdj = new JScrollPane(tablaAdj);
-        PanelGrafo     panelGrafo   = new PanelGrafo(grafo);
-        PanelTabla     panelDijkstra= new PanelTabla();
-        PanelKruskal   panelKruskal = new PanelKruskal();
-        
-        //  Pestañas
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.addTab("Grafo",     panelGrafo);
-        tabs.addTab("Dijkstra",  panelDijkstra);
-        tabs.addTab("Kruskal",   panelKruskal);
-        
-        //  Botones 
-        JButton btnDijkstra = crearBoton("▶ Dijkstra",     new Color(34,  150,  80));
-        JButton btnKruskal  = crearBoton("▶ Kruskal",      new Color(130,  40, 180));
 
-        btnDijkstra.addActionListener(e -> {
-            //tabs.setSelectedIndex(0);
-            panelGrafo.ejecutarDijkstra(panelDijkstra);
-            //tabs.setSelectedIndex(1);
-        });
+        JScrollPane scrollAdj = new JScrollPane(tablaAdj);
         
-        btnKruskal.addActionListener(e -> {
-            //tabs.setSelectedIndex(0);
-            panelGrafo.ejecutarKruskal(panelKruskal);
-            //tabs.setSelectedIndex(4);
-        });
+        
+        //grafo
+
+        PanelGrafo   panelGrafo    = new PanelGrafo(grafo);
+        PanelTabla   panelDijkstra = new PanelTabla();
+        PanelKruskal panelKruskal  = new PanelKruskal();
+
+        // Pestañas
+        JTabbedPane tabs = new JTabbedPane();
+        tabs.addTab("Grafo",      panelGrafo);
+        tabs.addTab("Dijkstra",   panelDijkstra);
+        tabs.addTab("Kruskal",    panelKruskal);
+        tabs.addTab("Adyacencia", scrollAdj);
+
+        // Botones
+        JButton btnDijkstra = crearBoton("▶ Dijkstra", new Color(34,  150,  80));
+        JButton btnKruskal  = crearBoton("▶ Kruskal",  new Color(130,  40, 180));
+
+        btnDijkstra.addActionListener(e -> panelGrafo.ejecutarDijkstra(panelDijkstra));
+        btnKruskal .addActionListener(e -> panelGrafo.ejecutarKruskal(panelKruskal));
 
         JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6));
         barra.setBackground(new Color(240, 240, 245));
         barra.add(btnDijkstra);
         barra.add(btnKruskal);
         barra.add(Box.createHorizontalStrut(15));
+
         setTitle("Grafo — Dijkstra");
         setSize(1000, 740);
         setLocationRelativeTo(null);
@@ -124,243 +123,6 @@ public class VentanaPrincipal extends JFrame{
     private void cargarGrafo(Grafo grafo) {
         HashMap<String, Nodo> n = new HashMap<>();
 
-        n.put("AA", new Nodo("AA", 30, 25));
-        n.put("AB", new Nodo("AB", 80, 25));
-        n.put("AC", new Nodo("AC", 130, 25));
-        n.put("AE", new Nodo("AE", 230, 25));
-        n.put("AG", new Nodo("AG", 330, 25));
-        n.put("AH", new Nodo("AH", 380, 25));
-        n.put("AI", new Nodo("AI", 430, 25));
-        n.put("AK", new Nodo("AK", 530, 25));
-        n.put("AL", new Nodo("AL", 580, 25));
-        n.put("AM", new Nodo("AM", 630, 25));
-        n.put("AP", new Nodo("AP", 780, 25));
-        n.put("AQ", new Nodo("AQ", 830, 25));
-        n.put("AR", new Nodo("AR", 880, 25));
-        n.put("BA", new Nodo("BA", 30, 59));
-        n.put("BB", new Nodo("BB", 80, 59));
-        n.put("BD", new Nodo("BD", 180, 59));
-        n.put("BE", new Nodo("BE", 230, 59));
-        n.put("BG", new Nodo("BG", 330, 59));
-        n.put("BH", new Nodo("BH", 380, 59));
-        n.put("BJ", new Nodo("BJ", 480, 59));
-        n.put("BK", new Nodo("BK", 530, 59));
-        n.put("BL", new Nodo("BL", 580, 59));
-        n.put("BM", new Nodo("BM", 630, 59));
-        n.put("BN", new Nodo("BN", 680, 59));
-        n.put("BO", new Nodo("BO", 730, 59));
-        n.put("BP", new Nodo("BP", 780, 59));
-        n.put("BQ", new Nodo("BQ", 830, 59));
-        n.put("BR", new Nodo("BR", 880, 59));
-        n.put("CA", new Nodo("CA", 30, 93));
-        n.put("CC", new Nodo("CC", 130, 93));
-        n.put("CD", new Nodo("CD", 180, 93));
-        n.put("CE", new Nodo("CE", 230, 93));
-        n.put("CF", new Nodo("CF", 280, 93));
-        n.put("CG", new Nodo("CG", 330, 93));
-        n.put("CI", new Nodo("CI", 430, 93));
-        n.put("CK", new Nodo("CK", 530, 93));
-        n.put("CL", new Nodo("CL", 580, 93));
-        n.put("CN", new Nodo("CN", 680, 93));
-        n.put("CO", new Nodo("CO", 730, 93));
-        n.put("CP", new Nodo("CP", 780, 93));
-        n.put("CQ", new Nodo("CQ", 830, 93));
-        n.put("DA", new Nodo("DA", 30, 127));
-        n.put("DB", new Nodo("DB", 80, 127));
-        n.put("DD", new Nodo("DD", 180, 127));
-        n.put("DF", new Nodo("DF", 280, 127));
-        n.put("DG", new Nodo("DG", 330, 127));
-        n.put("DI", new Nodo("DI", 430, 127));
-        n.put("DJ", new Nodo("DJ", 480, 127));
-        n.put("DK", new Nodo("DK", 530, 127));
-        n.put("DL", new Nodo("DL", 580, 127));
-        n.put("DN", new Nodo("DN", 680, 127));
-        n.put("DO", new Nodo("DO", 730, 127));
-        n.put("DP", new Nodo("DP", 780, 127));
-        n.put("DQ", new Nodo("DQ", 830, 127));
-        n.put("DR", new Nodo("DR", 880, 127));
-        n.put("EA", new Nodo("EA", 30, 161));
-        n.put("EB", new Nodo("EB", 80, 161));
-        n.put("EC", new Nodo("EC", 130, 161));
-        n.put("ED", new Nodo("ED", 180, 161));
-        n.put("EE", new Nodo("EE", 230, 161));
-        n.put("EF", new Nodo("EF", 280, 161));
-        n.put("EH", new Nodo("EH", 380, 161));
-        n.put("EI", new Nodo("EI", 430, 161));
-        n.put("EJ", new Nodo("EJ", 480, 161));
-        n.put("EK", new Nodo("EK", 530, 161));
-        n.put("EM", new Nodo("EM", 630, 161));
-        n.put("EN", new Nodo("EN", 680, 161));
-        n.put("EO", new Nodo("EO", 730, 161));
-        n.put("EQ", new Nodo("EQ", 830, 161));
-        n.put("FA", new Nodo("FA", 30, 195));
-        n.put("FB", new Nodo("FB", 80, 195));
-        n.put("FD", new Nodo("FD", 180, 195));
-        n.put("FE", new Nodo("FE", 230, 195));
-        n.put("FG", new Nodo("FG", 330, 195));
-        n.put("FH", new Nodo("FH", 380, 195));
-        n.put("FI", new Nodo("FI", 430, 195));
-        n.put("FK", new Nodo("FK", 530, 195));
-        n.put("FL", new Nodo("FL", 580, 195));
-        n.put("FM", new Nodo("FM", 630, 195));
-        n.put("FP", new Nodo("FP", 780, 195));
-        n.put("FR", new Nodo("FR", 880, 195));
-        n.put("GA", new Nodo("GA", 30, 229));
-        n.put("GC", new Nodo("GC", 130, 229));
-        n.put("GD", new Nodo("GD", 180, 229));
-        n.put("GE", new Nodo("GE", 230, 229));
-        n.put("GF", new Nodo("GF", 280, 229));
-        n.put("GH", new Nodo("GH", 380, 229));
-        n.put("GI", new Nodo("GI", 430, 229));
-        n.put("GJ", new Nodo("GJ", 480, 229));
-        n.put("GL", new Nodo("GL", 580, 229));
-        n.put("GN", new Nodo("GN", 680, 229));
-        n.put("GO", new Nodo("GO", 730, 229));
-        n.put("GP", new Nodo("GP", 780, 229));
-        n.put("GR", new Nodo("GR", 880, 229));
-        n.put("HA", new Nodo("HA", 30, 263));
-        n.put("HB", new Nodo("HB", 80, 263));
-        n.put("HD", new Nodo("HD", 180, 263));
-        n.put("HE", new Nodo("HE", 230, 263));
-        n.put("HG", new Nodo("HG", 330, 263));
-        n.put("HH", new Nodo("HH", 380, 263));
-        n.put("HI", new Nodo("HI", 430, 263));
-        n.put("HJ", new Nodo("HJ", 480, 263));
-        n.put("HK", new Nodo("HK", 530, 263));
-        n.put("HL", new Nodo("HL", 580, 263));
-        n.put("HM", new Nodo("HM", 630, 263));
-        n.put("HN", new Nodo("HN", 680, 263));
-        n.put("HP", new Nodo("HP", 780, 263));
-        n.put("HQ", new Nodo("HQ", 830, 263));
-        n.put("HR", new Nodo("HR", 880, 263));
-        n.put("IA", new Nodo("IA", 30, 297));
-        n.put("IB", new Nodo("IB", 80, 297));
-        n.put("IC", new Nodo("IC", 130, 297));
-        n.put("IE", new Nodo("IE", 230, 297));
-        n.put("IF", new Nodo("IF", 280, 297));
-        n.put("IG", new Nodo("IG", 330, 297));
-        n.put("IH", new Nodo("IH", 380, 297));
-        n.put("IJ", new Nodo("IJ", 480, 297));
-        n.put("IK", new Nodo("IK", 530, 297));
-        n.put("IL", new Nodo("IL", 580, 297));
-        n.put("IN", new Nodo("IN", 680, 297));
-        n.put("IO", new Nodo("IO", 730, 297));
-        n.put("IQ", new Nodo("IQ", 830, 297));
-        n.put("JB", new Nodo("JB", 80, 331));
-        n.put("JC", new Nodo("JC", 130, 331));
-        n.put("JD", new Nodo("JD", 180, 331));
-        n.put("JE", new Nodo("JE", 230, 331));
-        n.put("JF", new Nodo("JF", 280, 331));
-        n.put("JG", new Nodo("JG", 330, 331));
-        n.put("JH", new Nodo("JH", 380, 331));
-        n.put("JI", new Nodo("JI", 430, 331));
-        n.put("JJ", new Nodo("JJ", 480, 331));
-        n.put("JK", new Nodo("JK", 530, 331));
-        n.put("JM", new Nodo("JM", 630, 331));
-        n.put("JO", new Nodo("JO", 730, 331));
-        n.put("JP", new Nodo("JP", 780, 331));
-        n.put("JQ", new Nodo("JQ", 830, 331));
-        n.put("JR", new Nodo("JR", 880, 331));
-        n.put("KA", new Nodo("KA", 30, 365));
-        n.put("KB", new Nodo("KB", 80, 365));
-        n.put("KD", new Nodo("KD", 180, 365));
-        n.put("KG", new Nodo("KG", 330, 365));
-        n.put("KI", new Nodo("KI", 430, 365));
-        n.put("KK", new Nodo("KK", 530, 365));
-        n.put("KL", new Nodo("KL", 580, 365));
-        n.put("KM", new Nodo("KM", 630, 365));
-        n.put("KN", new Nodo("KN", 680, 365));
-        n.put("KO", new Nodo("KO", 730, 365));
-        n.put("KQ", new Nodo("KQ", 830, 365));
-        n.put("KR", new Nodo("KR", 880, 365));
-        n.put("LB", new Nodo("LB", 80, 399));
-        n.put("LD", new Nodo("LD", 180, 399));
-        n.put("LE", new Nodo("LE", 210, 399));
-        n.put("LF", new Nodo("LF", 260, 399));
-        n.put("LG", new Nodo("LG", 310, 399));
-        n.put("LI", new Nodo("LI", 410, 399));
-        n.put("LJ", new Nodo("LJ", 460, 399));
-        n.put("LK", new Nodo("LK", 510, 399));
-        n.put("LN", new Nodo("LN", 660, 399));
-        n.put("LO", new Nodo("LO", 710, 399));
-        n.put("LP", new Nodo("LP", 760, 399));
-        n.put("LR", new Nodo("LR", 860, 399));
-        n.put("MA", new Nodo("MA", 30, 433));
-        n.put("MC", new Nodo("MC", 130, 433));
-        n.put("MD", new Nodo("MD", 180, 433));
-        n.put("MF", new Nodo("MF", 280, 433));
-        n.put("MH", new Nodo("MH", 380, 433));
-        n.put("MI", new Nodo("MI", 430, 433));
-        n.put("MJ", new Nodo("MJ", 480, 433));
-        n.put("MK", new Nodo("MK", 530, 433));
-        n.put("ML", new Nodo("ML", 580, 433));
-        n.put("MM", new Nodo("MM", 630, 433));
-        n.put("MP", new Nodo("MP", 780, 433));
-        n.put("NB", new Nodo("NB", 80, 467));
-        n.put("NC", new Nodo("NC", 130, 467));
-        n.put("ND", new Nodo("ND", 180, 467));
-        n.put("NE", new Nodo("NE", 230, 467));
-        n.put("NF", new Nodo("NF", 280, 467));
-        n.put("NG", new Nodo("NG", 330, 467));
-        n.put("NH", new Nodo("NH", 380, 467));
-        n.put("NI", new Nodo("NI", 430, 467));
-        n.put("NK", new Nodo("NK", 530, 467));
-        n.put("NL", new Nodo("NL", 580, 467));
-        n.put("NN", new Nodo("NN", 680, 467));
-        n.put("NR", new Nodo("NR", 880, 467));
-        n.put("OA", new Nodo("OA", 30, 501));
-        n.put("OB", new Nodo("OB", 80, 501));
-        n.put("OC", new Nodo("OC", 130, 501));
-        n.put("OD", new Nodo("OD", 180, 501));
-        n.put("OE", new Nodo("OE", 230, 501));
-        n.put("OG", new Nodo("OG", 330, 501));
-        n.put("OI", new Nodo("OI", 430, 501));
-        n.put("OJ", new Nodo("OJ", 480, 501));
-        n.put("OL", new Nodo("OL", 580, 501));
-        n.put("OM", new Nodo("OM", 630, 501));
-        n.put("OO", new Nodo("OO", 730, 501));
-        n.put("OP", new Nodo("OP", 780, 501));
-        n.put("OQ", new Nodo("OQ", 830, 501));
-        n.put("OR", new Nodo("F", 880, 501));
-        n.put("PA", new Nodo("PA", 30, 535));
-        n.put("PC", new Nodo("PC", 130, 535));
-        n.put("PE", new Nodo("PE", 230, 535));
-        n.put("PF", new Nodo("PF", 280, 535));
-        n.put("PG", new Nodo("PG", 330, 535));
-        n.put("PH", new Nodo("PH", 380, 535));
-        n.put("PJ", new Nodo("PJ", 480, 535));
-        n.put("PK", new Nodo("PK", 530, 535));
-        n.put("PM", new Nodo("PM", 630, 535));
-        n.put("PN", new Nodo("PN", 680, 535));
-        n.put("PP", new Nodo("PP", 780, 535));
-        n.put("PQ", new Nodo("PQ", 830, 535));
-        n.put("PR", new Nodo("PR", 880, 535));
-        n.put("QB", new Nodo("QB", 80, 569));
-        n.put("QC", new Nodo("QC", 130, 569));
-        n.put("QD", new Nodo("QD", 180, 569));
-        n.put("QF", new Nodo("QF", 280, 569));
-        n.put("QG", new Nodo("QG", 330, 569));
-        n.put("QH", new Nodo("QH", 380, 569));
-        n.put("QI", new Nodo("QI", 430, 569));
-        n.put("QJ", new Nodo("QJ", 480, 569));
-        n.put("QK", new Nodo("QK", 530, 569));
-        n.put("QL", new Nodo("QL", 580, 569));
-        n.put("QM", new Nodo("QM", 630, 569));
-        n.put("QN", new Nodo("QN", 680, 569));
-        n.put("QO", new Nodo("QO", 730, 569));
-        n.put("QP", new Nodo("QP", 780, 569));
-        n.put("QQ", new Nodo("QQ", 830, 569));
-        n.put("RA", new Nodo("RA", 30, 603)); 
-        n.put("RB", new Nodo("RB", 80, 603));
-        n.put("RF", new Nodo("RF", 280, 603));
-        n.put("RG", new Nodo("RG", 330, 603));
-        n.put("RH", new Nodo("RH", 380, 603));
-        n.put("RI", new Nodo("RI", 430, 603));
-        n.put("RJ", new Nodo("RJ", 480, 603));
-        n.put("RM", new Nodo("RM", 630, 603));
-        n.put("RN", new Nodo("RN", 680, 603));
-        n.put("RQ", new Nodo("RQ", 830, 603));
-        n.put("RR", new Nodo("RR", 880, 603));
         n.put("AA", new Nodo("AA", 30, 25));
         n.put("AB", new Nodo("AB", 85, 25));
         n.put("AC", new Nodo("AC", 140, 25));
@@ -592,7 +354,7 @@ public class VentanaPrincipal extends JFrame{
         n.put("QO", new Nodo("QO", 800, 651));
         n.put("QP", new Nodo("QP", 855, 651));
         n.put("QQ", new Nodo("QQ", 910, 651));
-        n.put("RA", new Nodo("RA", 30, 690)); //RA
+        n.put("RA", new Nodo("RA", 30, 690));
         n.put("RB", new Nodo("RB", 85, 690));
         n.put("RE", new Nodo("RE", 250, 690));
         n.put("RF", new Nodo("RF", 305, 690));
@@ -608,13 +370,10 @@ public class VentanaPrincipal extends JFrame{
         n.put("RR", new Nodo("RR", 965, 690));
 
         for (Nodo nodo : n.values()) {
-        	grafo.agregarNodo(nodo);
+            grafo.agregarNodo(nodo);
         }
-        //Derecha 15
-        //Arriba 30
-        //Izquierda 15
-        //Abajo 10
-        //Diagonal 33
+
+        // Derecha 15 - Abajo 10 - Izquierda 15 - Arriba 30 - Diagonal 33
         grafo.agregarArista(n.get("AA"), n.get("AB"), 15);
         grafo.agregarArista(n.get("AA"), n.get("BA"), 10);
         grafo.agregarArista(n.get("AA"), n.get("BB"), 33);
@@ -1126,7 +885,7 @@ public class VentanaPrincipal extends JFrame{
         grafo.agregarArista(n.get("NN"), n.get("OO"), 33);
         grafo.agregarArista(n.get("NN"), n.get("OM"), 33);
         grafo.agregarArista(n.get("NO"), n.get("NN"), 15);
-        grafo.agregarArista(n.get("NO"), n.get("MN"), 33); 
+        grafo.agregarArista(n.get("NO"), n.get("MN"), 33);
         grafo.agregarArista(n.get("NO"), n.get("OP"), 33);
         grafo.agregarArista(n.get("NO"), n.get("OO"), 10);
         grafo.agregarArista(n.get("NO"), n.get("MP"), 33);
@@ -1264,7 +1023,8 @@ public class VentanaPrincipal extends JFrame{
         grafo.agregarArista(n.get("RP"), n.get("QP"), 10);
         grafo.agregarArista(n.get("RP"), n.get("RQ"), 15);
         grafo.agregarArista(n.get("RQ"), n.get("RR"), 15);
-        
+
+        // Escalar posiciones para más espacio entre nodos
         double escalaX = 1.6;
         double escalaY = 1.8;
         for (Nodo nodo : grafo.getNodos()) {
@@ -1273,7 +1033,7 @@ public class VentanaPrincipal extends JFrame{
         }
     }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new VentanaPrincipal());
-	}
+    }
 }
