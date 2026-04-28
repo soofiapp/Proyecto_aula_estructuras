@@ -26,6 +26,7 @@ public class PanelGrafo extends JPanel {
  
     private double zoom    = 1.0;
     private double offsetY = 0;
+    private double offsetX = 0; 
  
     private JPanel barraBotones;
     private JPanel canvas;
@@ -133,8 +134,11 @@ public class PanelGrafo extends JPanel {
  
         // Rueda del mouse: scroll vertical -------------
         canvas.addMouseWheelListener(e -> {
-            if (e.isControlDown()) {
+        	if (e.isControlDown()) {
                 aplicarZoom(e.getWheelRotation() < 0 ? zoom * 1.1 : zoom / 1.1);
+            } else if (e.isShiftDown()) {
+                offsetX -= e.getWheelRotation() * 30; // 👈 Shift+rueda = horizontal
+                canvas.repaint();
             } else {
                 offsetY -= e.getWheelRotation() * 30;
                 canvas.repaint();
@@ -157,6 +161,8 @@ public class PanelGrafo extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:       offsetY += 40; canvas.repaint(); break;
                     case KeyEvent.VK_DOWN:     offsetY -= 40; canvas.repaint(); break;
+                    case KeyEvent.VK_LEFT:     offsetX += 40; canvas.repaint(); break; 
+                    case KeyEvent.VK_RIGHT:    offsetX -= 40; canvas.repaint(); break;
                     case KeyEvent.VK_HOME:     zoom = 1.0; offsetY = 0; lblZoom.setText("Zoom: 100%"); canvas.repaint(); break;
                     case KeyEvent.VK_ADD:
                     case KeyEvent.VK_PLUS:     aplicarZoom(zoom * 1.2); break;
@@ -176,7 +182,7 @@ public class PanelGrafo extends JPanel {
         double canvasCx = canvas.getWidth()  / 2.0;
         double canvasCy = canvas.getHeight() / 2.0;
  
-        int gx = (int) ((px - canvasCx) / zoom + gcx);
+        int gx = (int) ((px - canvasCx - offsetX) / zoom + gcx);
         int gy = (int) ((py - canvasCy - offsetY) / zoom + gcy);
         return new int[]{gx, gy};
     }
@@ -218,7 +224,7 @@ public class PanelGrafo extends JPanel {
         double gcy = centro[1];
  
         AffineTransform original = g2.getTransform();
-        g2.translate(canvasCx, canvasCy + offsetY);
+        g2.translate(canvasCx + offsetX, canvasCy + offsetY);
         g2.scale(zoom, zoom);
         g2.translate(-gcx, -gcy);
  
