@@ -5,7 +5,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.util.List;
 
-public class PanelKruskal extends JPanel {
+public class PanelKruskal extends JPanel implements VistaKruskal {
 
     private JTable             tabla;
     private DefaultTableModel  modelo;

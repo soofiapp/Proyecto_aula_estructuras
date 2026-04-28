@@ -375,7 +375,7 @@ public class PanelGrafo extends JPanel {
     }
  
     // ── Dijkstra -------------------
-    public void ejecutarDijkstra(PanelTabla panelTabla) {
+    public void ejecutarDijkstra(VistaDijkstra vista) {
     	limpiar();
         List<Nodo> nodos = grafo.getNodos();
         if (nodos.size() < 2) { JOptionPane.showMessageDialog(this,"Necesitas al menos 2 nodos."); return; }
@@ -384,9 +384,12 @@ public class PanelGrafo extends JPanel {
         Nodo origen = buscarPorId(origenId);
         if (origen == null) { JOptionPane.showMessageDialog(this,"No existe el nodo RA."); return; }
         
-        String[] nombres = nodos.stream().map(Nodo::getId).toArray(String[]::new);
-        String destinoId = (String) JOptionPane.showInputDialog(this,"Nodo DESTINO:","Dijkstra",
-            JOptionPane.PLAIN_MESSAGE,null,nombres,nombres[nombres.length-1]);
+        
+        //SOLO HAY ESOS DESTINOS (16)
+        String[] destinos = {"AA","AE","AH","AR","CI","FG","FP","FR","GL","IA","JQ","MM","OR","RG","RM","RR"};
+
+        String destinoId = (String) JOptionPane.showInputDialog(this, "NODO DESTINO:", "Dijkstra",
+            JOptionPane.PLAIN_MESSAGE, null, destinos, destinos[0]);
         if (destinoId == null) return;
         
         Nodo destino = buscarPorId(destinoId);
@@ -396,19 +399,19 @@ public class PanelGrafo extends JPanel {
         distanciaTotal = Dijkstra.distancias.get(destino);
         modoActual     = "DIJKSTRA";
         if (caminoDijkstra.size() <= 1) { JOptionPane.showMessageDialog(this,"No existe camino."); caminoDijkstra = null; }
-        panelTabla.mostrarDijkstra(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra);
+        vista.mostrarDijkstra(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra);
         repaint();
     }
  
     // Kruskal --------------
-    public void ejecutarKruskal(PanelKruskal panelKruskal) {
+    public void ejecutarKruskal(VistaKruskal vista) {
         limpiar();
         if (grafo.getNodos().size() < 2) { JOptionPane.showMessageDialog(this,"Necesitas al menos 2 nodos."); return; }
         Kruskal.ejecutar(grafo);
         aristasKruskal  = new ArrayList<>(Kruskal.aristasArbol);
         aristasAnimadas = 0;
         modoActual      = "KRUSKAL";
-        panelKruskal.mostrarKruskal(aristasKruskal, Kruskal.pesoTotal);
+        vista.mostrarKruskal(aristasKruskal, Kruskal.pesoTotal);
         animarKruskal();
     }
  
