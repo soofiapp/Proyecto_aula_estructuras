@@ -222,25 +222,45 @@ public class PanelGrafo extends JPanel {
         g2.scale(zoom, zoom);
         g2.translate(-gcx, -gcy);
  
-        // Aristas ------------------
+     // Aristas ------------------
         for (Arista a : grafo.getAristas()) {
             int x1 = a.getOrigen().getX(),  y1 = a.getOrigen().getY();
             int x2 = a.getDestino().getX(), y2 = a.getDestino().getY();
- 
+
             boolean enDijkstra  = aristaEnCamino(a, caminoDijkstra);
             boolean enAEstrella = aristaEnCamino(a, caminoAEstrella);
             boolean enKruskal   = aristaEnKruskal(a);
- 
+
             Color color;
             float grosor;
             if      (enDijkstra)  { color = new Color(34, 180, 90);  grosor = 5.5f; }
             else if (enAEstrella) { color = new Color(0, 160, 220);  grosor = 5.5f; }
             else if (enKruskal)   { color = new Color(160, 80, 200); grosor = 5.5f; }
             else                  { color = Color.GRAY;              grosor = 2f;   }
- 
+
             g2.setColor(color);
             g2.setStroke(new BasicStroke(grosor));
             g2.drawLine(x1, y1, x2, y2);
+
+            // ── Peso de la arista ──────────────────────────────────────
+            int mx = (x1 + x2) / 2;
+            int my = (y1 + y2) / 2;
+
+            String peso = String.valueOf(a.getPeso());
+            g2.setFont(new Font("BOLD", Font.PLAIN, 9));
+            FontMetrics fmP = g2.getFontMetrics();
+            int pw = fmP.stringWidth(peso);
+
+            // Fondo blanco pequeño para que se lea bien
+            g2.setColor(new Color(255, 255, 255, 200));
+            g2.fillRect(mx - pw/2 - 1, my - 9, pw + 2, 11);
+
+            // Texto del peso
+            g2.setColor(enDijkstra || enAEstrella || enKruskal
+                        ? color.darker()
+                        : new Color(0, 0, 0));
+            g2.drawString(peso, mx - pw/2, my);
+            // ──────────────────────────────────────────────────────────
         }
  
         // Nodos -------------------
@@ -294,7 +314,7 @@ public class PanelGrafo extends JPanel {
  
             g2.setColor(relleno);
             g2.fillOval(n.getX()-RADIO, n.getY()-RADIO, RADIO*2, RADIO*2);
-            g2.setColor(Color.DARK_GRAY);
+            g2.setColor(Color.BLUE);
             g2.drawOval(n.getX()-RADIO, n.getY()-RADIO, RADIO*2, RADIO*2);
  
             if ((modoActual.equals("BFS")||modoActual.equals("DFS")) && ordenRecorrido != null) {

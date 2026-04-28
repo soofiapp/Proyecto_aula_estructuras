@@ -1,6 +1,7 @@
 package co.edu.upb.proyectoAula;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -11,10 +12,63 @@ public class VentanaPrincipal extends JFrame{
         Grafo grafo = new Grafo();
         cargarGrafo(grafo);
         
-        MatrizAdyacencia matrizAdj = new MatrizAdyacencia(grafo);
-        matrizAdj.imprimir(); // opcional, para verificar en consola
+        
+        // ── Matriz de adyacencia ──────────────────────────────
+        String[] letras = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R"};
+        HashMap<String, Nodo> mapa = new HashMap<>();
+        for (Nodo nd : grafo.getNodos()) mapa.put(nd.getId(), nd);
 
+        DefaultTableModel modeloAdj = new DefaultTableModel();
+        modeloAdj.addColumn("I\\→");
+        for (String col : letras) modeloAdj.addColumn(col);
 
+        for (String fila : letras) {
+            Object[] row = new Object[letras.length + 1];
+            row[0] = fila;
+            for (int j = 0; j < letras.length; j++) {
+                String id = fila + letras[j];
+                if (mapa.containsKey(id)) {
+                    if (id.equals("RA"))                          row[j+1] = "I";
+                    else if (!mapa.get(id).getId().equals(id))   row[j+1] = "F";
+                    else                                          row[j+1] = "1";
+                } else {
+                    row[j+1] = "0";
+                }
+            }
+            modeloAdj.addRow(row);
+        }
+
+        JTable tablaAdj = new JTable(modeloAdj);
+        tablaAdj.setRowHeight(24);
+        tablaAdj.setFont(new Font("Arial", Font.PLAIN, 12));
+        tablaAdj.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        tablaAdj.getTableHeader().setBackground(new Color(50, 100, 160));
+        tablaAdj.getTableHeader().setForeground(Color.WHITE);
+        tablaAdj.getColumnModel().getColumn(0).setPreferredWidth(35);
+        for (int i = 1; i <= letras.length; i++)
+            tablaAdj.getColumnModel().getColumn(i).setPreferredWidth(30);
+
+        tablaAdj.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(JTable t, Object val,
+                    boolean sel, boolean foc, int row, int col) {
+                super.getTableCellRendererComponent(t, val, sel, foc, row, col);
+                setHorizontalAlignment(CENTER);
+                String v = val == null ? "" : val.toString();
+                if (col == 0) {
+                    setBackground(new Color(50, 100, 160));
+                    setForeground(Color.WHITE);
+                    setFont(getFont().deriveFont(Font.BOLD));
+                } else switch (v) {
+                    case "1": setBackground(new Color(200,230,200)); setForeground(new Color(20,100,20));   break;
+                    case "0": setBackground(new Color(245,245,245)); setForeground(new Color(180,180,180)); break;
+                    case "I": setBackground(new Color(255,220,80));  setForeground(new Color(120,80,0));    break;
+                    case "F": setBackground(new Color(210,80,80));   setForeground(Color.WHITE);            break;
+                }
+                return this;
+            }
+        });
+        JScrollPane scrollAdj = new JScrollPane(tablaAdj);
         PanelGrafo     panelGrafo   = new PanelGrafo(grafo);
         PanelTabla     panelDijkstra= new PanelTabla();
         PanelKruskal   panelKruskal = new PanelKruskal();
@@ -1210,6 +1264,13 @@ public class VentanaPrincipal extends JFrame{
         grafo.agregarArista(n.get("RP"), n.get("QP"), 10);
         grafo.agregarArista(n.get("RP"), n.get("RQ"), 15);
         grafo.agregarArista(n.get("RQ"), n.get("RR"), 15);
+        
+        double escalaX = 1.6;
+        double escalaY = 1.8;
+        for (Nodo nodo : grafo.getNodos()) {
+            nodo.setX((int)(nodo.getX() * escalaX));
+            nodo.setY((int)(nodo.getY() * escalaY));
+        }
     }
 
 	public static void main(String[] args) {
