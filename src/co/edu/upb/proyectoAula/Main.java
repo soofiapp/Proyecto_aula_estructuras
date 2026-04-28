@@ -5,9 +5,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.HashMap;
 
-public class VentanaPrincipal extends JFrame {
+public class Main extends JFrame {
 
-    public VentanaPrincipal() {
+    public Main() {
         Grafo grafo = new Grafo();
         cargarGrafo(grafo);
 
@@ -1033,6 +1033,6 @@ public class VentanaPrincipal extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new VentanaPrincipal());
+        SwingUtilities.invokeLater(() -> new Main());
     }
 }

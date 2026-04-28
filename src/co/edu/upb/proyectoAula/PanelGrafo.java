@@ -441,15 +441,6 @@ public class PanelGrafo extends JPanel {
         repaint();
     }
  
-    private Nodo pedirOrigen(String algo) {
-        List<Nodo> nodos = grafo.getNodos();
-        if (nodos.isEmpty()) { JOptionPane.showMessageDialog(this,"No hay nodos."); return null; }
-        String[] nombres = nodos.stream().map(Nodo::getId).toArray(String[]::new);
-        String id = (String) JOptionPane.showInputDialog(this,"Nodo de inicio para "+algo+":",algo,
-            JOptionPane.PLAIN_MESSAGE,null,nombres,nombres[0]);
-        return id != null ? buscarPorId(id) : null;
-    }
- 
     private Nodo buscarPorId(String id) {
         return grafo.getNodos().stream().filter(n -> n.getId().equals(id)).findFirst().orElse(null);
     }
