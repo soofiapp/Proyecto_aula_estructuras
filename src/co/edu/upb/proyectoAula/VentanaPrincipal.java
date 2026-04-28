@@ -245,7 +245,6 @@ public class VentanaPrincipal extends JFrame {
         n.put("IN", new Nodo("IN", 745, 338));
         n.put("IO", new Nodo("IO", 800, 338));
         n.put("IQ", new Nodo("IQ", 910, 338));
-        n.put("IR", new Nodo("IR", 965, 338));
         n.put("JB", new Nodo("JB", 85, 377));
         n.put("JC", new Nodo("JC", 140, 377));
         n.put("JD", new Nodo("JD", 195, 377));
