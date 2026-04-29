@@ -407,6 +407,7 @@ public class PanelGrafo extends JPanel {
     public void ejecutarKruskal(VistaKruskal vista) {
         limpiar();
         if (grafo.getNodos().size() < 2) { JOptionPane.showMessageDialog(this,"Necesitas al menos 2 nodos."); return; }
+        
         Kruskal.ejecutar(grafo);
         aristasKruskal  = new ArrayList<>(Kruskal.aristasArbol);
         aristasAnimadas = 0;
