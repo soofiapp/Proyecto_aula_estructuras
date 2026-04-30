@@ -585,6 +585,7 @@ public class PanelGrafo extends JPanel {
        btnOk.addActionListener(e -> dlg.dispose());
        btnOk.setAlignmentX(0.5f);
 
+<<<<<<< HEAD
        JPanel contenido = new JPanel();
        contenido.setOpaque(false);
        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
@@ -674,4 +675,99 @@ public class PanelGrafo extends JPanel {
    }
 
    @Override protected void paintComponent(Graphics g) { super.paintComponent(g); }
+=======
+        String destinoId = (String) JOptionPane.showInputDialog(this, "NODO DESTINO:", "Dijkstra",
+            JOptionPane.PLAIN_MESSAGE, null, destinos, destinos[0]);
+        if (destinoId == null) return;
+        
+        Nodo destino = buscarPorId(destinoId);
+        if (origen == destino) { JOptionPane.showMessageDialog(this,"Origen y destino iguales."); return; }
+        Dijkstra.ejecutar(grafo, origen, destino);
+        caminoDijkstra = Dijkstra.camino;
+        distanciaTotal = Dijkstra.distancias.get(destino);
+        modoActual     = "DIJKSTRA";
+        if (caminoDijkstra.size() <= 1) { JOptionPane.showMessageDialog(this,"No existe camino."); caminoDijkstra = null; }
+        vista.mostrarDijkstra(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra);
+        repaint();
+    }
+ 
+    // Kruskal --------------
+    public void ejecutarKruskal(VistaKruskal vista) {
+        limpiar();
+        if (grafo.getNodos().size() < 2) { JOptionPane.showMessageDialog(this,"Necesitas al menos 2 nodos."); return; }
+        
+        Kruskal.ejecutar(grafo);
+        aristasKruskal  = new ArrayList<>(Kruskal.aristasArbol);
+        aristasAnimadas = 0;
+        modoActual      = "KRUSKAL";
+        vista.mostrarKruskal(aristasKruskal, Kruskal.pesoTotal);
+        animarKruskal();
+    }
+ 
+    //  Animaciones ------------
+    private void animarRecorrido() {
+        nodoAnimado = 0;
+        timerAnimacion = new Timer(600, null);
+        timerAnimacion.addActionListener(e -> {
+            nodoAnimado++; repaint();
+            if (nodoAnimado >= ordenRecorrido.size()) timerAnimacion.stop();
+        });
+        timerAnimacion.start(); repaint();
+    }
+ 
+    private void animarKruskal() {
+        aristasAnimadas = 0;
+        timerAnimacion  = new Timer(700, null);
+        timerAnimacion.addActionListener(e -> {
+            aristasAnimadas++; repaint();
+            if (aristasAnimadas >= aristasKruskal.size()) timerAnimacion.stop();
+        });
+        timerAnimacion.start(); repaint();
+    }
+ 
+    public void limpiar() {
+        if (timerAnimacion != null) timerAnimacion.stop();
+        caminoDijkstra = null; caminoAEstrella = null;
+        ordenRecorrido = null; aristasKruskal  = null;
+        aristasAnimadas = 0; nodoAnimado = -1; modoActual = "";
+        repaint();
+    }
+ 
+    private Nodo buscarPorId(String id) {
+        return grafo.getNodos().stream().filter(n -> n.getId().equals(id)).findFirst().orElse(null);
+    }
+ 
+    private Nodo buscarNodo(int x, int y) {
+        for (Nodo n : grafo.getNodos()) {
+            int dx = n.getX()-x, dy = n.getY()-y;
+            if (Math.sqrt(dx*dx+dy*dy) <= RADIO) return n;
+        }
+        return null;
+    }
+ 
+    private boolean aristaEnCamino(Arista a, List<Nodo> camino) {
+        if (camino == null || camino.size() < 2) return false;
+        for (int i = 0; i < camino.size()-1; i++) {
+            Nodo u = camino.get(i), v = camino.get(i+1);
+            if ((a.getOrigen()==u&&a.getDestino()==v)||(a.getOrigen()==v&&a.getDestino()==u)) return true;
+        }
+        return false;
+    }
+ 
+    private boolean aristaEnKruskal(Arista a) {
+        if (aristasKruskal == null) return false;
+        int lim = Math.min(aristasAnimadas, aristasKruskal.size());
+        for (int i = 0; i < lim; i++) {
+            Arista k = aristasKruskal.get(i);
+            if ((k.getOrigen()==a.getOrigen()&&k.getDestino()==a.getDestino())||
+                (k.getOrigen()==a.getDestino()&&k.getDestino()==a.getOrigen())) return true;
+        }
+        return false;
+    }
+ 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+    }
+>>>>>>> 7f7fe55c3c748f99517be1e54f1e22243d2235b5
 }
