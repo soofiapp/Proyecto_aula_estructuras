@@ -1,7 +1,7 @@
 package co.edu.upb.proyectoAula.views;
- 
+
 import javax.swing.*;
-<<<<<<< HEAD:src/co/edu/upb/proyectoAula/views/PanelGrafo.java
+import javax.swing.border.*;
 
 import co.edu.upb.proyectoAula.VistaDijkstra;
 import co.edu.upb.proyectoAula.VistaKruskal;
@@ -11,17 +11,14 @@ import co.edu.upb.proyectoAula.data_structures.Arista;
 import co.edu.upb.proyectoAula.data_structures.Grafo;
 import co.edu.upb.proyectoAula.data_structures.Nodo;
 
-=======
-import javax.swing.border.*;
->>>>>>> 84702c4d348f6a69da29792c63c53a5280450564:src/co/edu/upb/proyectoAula/PanelGrafo.java
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.awt.geom.AffineTransform;
- 
+
 public class PanelGrafo extends JPanel {
- 
+
     // ── Paleta ───────────────────────────────────────────────────────
     private static final Color BG_CANVAS  = new Color(10,  12,  20);
     private static final Color BG_TOOLBAR = new Color(14,  18,  32);
@@ -35,34 +32,34 @@ public class PanelGrafo extends JPanel {
     private static final Color NODO_DEF   = new Color( 40,  90, 180);
     private static final Color NODO_SEL   = new Color(255, 165,   0);
     private static final Color BLACK      = new Color(0, 0,   0);
- 
+
     private static final int RADIO = 15;
- 
+
     // ── Estado ───────────────────────────────────────────────────────
     private Grafo grafo;
     private Nodo  nodoSeleccionado = null;
- 
+
     private List<Nodo>   caminoDijkstra = null;
     private List<Arista> aristasKruskal = null;
     private int          aristasAnimadas = 0;
     private int          distanciaTotal  = 0;
     private String       modoActual      = "";
- 
+
     private Timer  timerAnimacion;
     private double zoom    = 1.0;
     private double offsetX = 0;
     private double offsetY = 0;
- 
+
     private JPanel barraBotones;
     private JPanel canvas;
     private JLabel lblZoom;
     private JLabel lblStatus;
- 
+
     public PanelGrafo(Grafo grafo) {
         this.grafo = grafo;
         setLayout(new BorderLayout());
         setBackground(BG_CANVAS);
- 
+
         // ── Barra de herramientas ────────────────────────────────────
         barraBotones = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6)) {
             @Override protected void paintComponent(Graphics g) {
@@ -74,30 +71,30 @@ public class PanelGrafo extends JPanel {
             }
         };
         barraBotones.setOpaque(false);
- 
+
         JButton btnMenos   = mkBtn("−", new Color(40,50,80), new Color(60,75,110));
         JButton btnMas     = mkBtn("+", new Color(40,50,80), new Color(60,75,110));
         JButton btnCentrar = mkBtn("⌖ Centrar", CIAN.darker(), CIAN.darker().darker());
- 
+
         lblZoom = new JLabel("100%");
         lblZoom.setFont(new Font("Monospaced", Font.BOLD, 12));
         lblZoom.setForeground(CIAN);
         lblZoom.setBorder(new EmptyBorder(0, 6, 0, 6));
- 
+
         lblStatus = new JLabel("Clic en nodo para seleccionar  ·  Clic en espacio vacío para agregar");
         lblStatus.setFont(new Font("Monospaced", Font.PLAIN, 12));
         lblStatus.setForeground(TEXTO_DIM);
- 
+
         btnMas.addActionListener(e -> aplicarZoom(zoom * 1.2));
         btnMenos.addActionListener(e -> aplicarZoom(zoom / 1.2));
         btnCentrar.addActionListener(e -> { zoom = 1.0; offsetX = 0; offsetY = 0;
             lblZoom.setText("100%"); canvas.repaint(); });
- 
+
         // Separador visual
         JSeparator sep = new JSeparator(JSeparator.VERTICAL);
         sep.setPreferredSize(new Dimension(1, 22));
         sep.setForeground(BORDE);
- 
+
         barraBotones.add(btnMenos);
         barraBotones.add(lblZoom);
         barraBotones.add(btnMas);
@@ -107,7 +104,7 @@ public class PanelGrafo extends JPanel {
         barraBotones.add(btnCentrar);
         barraBotones.add(Box.createHorizontalStrut(16));
         barraBotones.add(lblStatus);
- 
+
         // ── Canvas ───────────────────────────────────────────────────
         canvas = new JPanel() {
             @Override protected void paintComponent(Graphics g) {
@@ -116,10 +113,10 @@ public class PanelGrafo extends JPanel {
             }
         };
         canvas.setBackground(BG_CANVAS);
- 
+
         add(barraBotones, BorderLayout.NORTH);
         add(canvas,       BorderLayout.CENTER);
- 
+
         // ── Eventos de ratón ─────────────────────────────────────────
         canvas.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -162,13 +159,13 @@ public class PanelGrafo extends JPanel {
                 canvas.requestFocusInWindow();
             }
         });
- 
+
         canvas.addMouseWheelListener(e -> {
             if (e.isControlDown()) aplicarZoom(e.getWheelRotation() < 0 ? zoom * 1.1 : zoom / 1.1);
             else if (e.isShiftDown()) { offsetX -= e.getWheelRotation() * 30; canvas.repaint(); }
             else                      { offsetY -= e.getWheelRotation() * 30; canvas.repaint(); }
         });
- 
+
         canvas.setFocusable(true);
         canvas.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
@@ -187,7 +184,7 @@ public class PanelGrafo extends JPanel {
             }
         });
     }
- 
+
     // ── Coordenadas ──────────────────────────────────────────────────
     private int[] pantallaAGrafo(int px, int py) {
         double[] c  = centroGrafo();
@@ -195,7 +192,7 @@ public class PanelGrafo extends JPanel {
         int gy = (int)((py - canvas.getHeight()/2.0 - offsetY) / zoom + c[1]);
         return new int[]{gx, gy};
     }
- 
+
     private double[] centroGrafo() {
         List<Nodo> ns = grafo.getNodos();
         if (ns.isEmpty()) return new double[]{canvas.getWidth()/2.0, canvas.getHeight()/2.0};
@@ -205,57 +202,57 @@ public class PanelGrafo extends JPanel {
         double maxY = ns.stream().mapToInt(Nodo::getY).max().getAsInt();
         return new double[]{(minX+maxX)/2.0, (minY+maxY)/2.0};
     }
- 
+
     private void aplicarZoom(double z) {
         zoom = Math.max(0.15, Math.min(z, 6.0));
         lblZoom.setText((int)(zoom*100) + "%");
         canvas.repaint();
     }
- 
+
     // ── Dibujo ───────────────────────────────────────────────────────
     private void dibujar(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
- 
+
         int pw = canvas.getWidth(), ph = canvas.getHeight();
- 
+
         // Cuadrícula decorativa
         g2.setColor(GRID_LINE);
         for (int x = 0; x < pw; x += 32) g2.drawLine(x, 0, x, ph);
         for (int y = 0; y < ph; y += 32) g2.drawLine(0, y, pw, y);
- 
+
         double[] centro = centroGrafo();
         AffineTransform original = g2.getTransform();
         g2.translate(pw/2.0 + offsetX, ph/2.0 + offsetY);
         g2.scale(zoom, zoom);
         g2.translate(-centro[0], -centro[1]);
- 
+
         // ── Aristas ──────────────────────────────────────────────────
         for (Arista a : grafo.getAristas()) {
             int x1 = a.getOrigen().getX(),  y1 = a.getOrigen().getY();
             int x2 = a.getDestino().getX(), y2 = a.getDestino().getY();
- 
+
             boolean enDij = aristaEnCamino(a, caminoDijkstra);
             boolean enKru = aristaEnKruskal(a);
- 
+
             Color color;
             float grosor;
             if      (enDij) { color = VERDE;                        grosor = 5f; }
             else if (enKru) { color = PURP;                         grosor = 5f; }
             else            { color = new Color(40, 55, 90);         grosor = 1.5f; }
- 
+
             // Resplandor en aristas del camino
             if (enDij || enKru) {
                 g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 40));
                 g2.setStroke(new BasicStroke(grosor + 6, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 g2.drawLine(x1, y1, x2, y2);
             }
- 
+
             g2.setColor(color);
             g2.setStroke(new BasicStroke(grosor, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2.drawLine(x1, y1, x2, y2);
- 
+
             // Peso de la arista
             int mx = (x1+x2)/2, my = (y1+y2)/2;
             String peso = String.valueOf(a.getPeso());
@@ -267,12 +264,12 @@ public class PanelGrafo extends JPanel {
             g2.setColor(enDij||enKru ? color.brighter() : TEXTO_DIM);
             g2.drawString(peso, mx-pw2/2, my);
         }
- 
+
         // ── Nodos ────────────────────────────────────────────────────
         g2.setStroke(new BasicStroke(2));
         for (Nodo n : grafo.getNodos()) {
             Color relleno = NODO_DEF;
- 
+
             if ("DIJKSTRA".equals(modoActual) && caminoDijkstra != null) {
                 if (n == caminoDijkstra.get(0))
                     relleno = VERDE;
@@ -287,27 +284,27 @@ public class PanelGrafo extends JPanel {
                     if (k.getOrigen()==n || k.getDestino()==n) { relleno = PURP; break; }
                 }
             }
- 
+
             if (n == nodoSeleccionado) relleno = NODO_SEL;
- 
+
             // Resplandor del nodo
             Color glow = new Color(relleno.getRed(), relleno.getGreen(), relleno.getBlue(), 60);
             g2.setColor(glow);
             g2.fillOval(n.getX()-RADIO-5, n.getY()-RADIO-5, (RADIO+5)*2, (RADIO+5)*2);
- 
+
             // Relleno con gradiente interno
             g2.setColor(relleno.darker());
             g2.fillOval(n.getX()-RADIO, n.getY()-RADIO, RADIO*2, RADIO*2);
- 
+
             // Highlight superior sutil
             g2.setColor(new Color(255,255,255,30));
             g2.fillOval(n.getX()-RADIO+3, n.getY()-RADIO+3, RADIO-2, RADIO/2);
- 
+
             // Borde del nodo
             g2.setColor(relleno.brighter());
             g2.setStroke(new BasicStroke(1.5f));
             g2.drawOval(n.getX()-RADIO, n.getY()-RADIO, RADIO*2, RADIO*2);
- 
+
             // Texto del nodo
             g2.setColor(Color.WHITE);
             g2.setFont(new Font("Monospaced", Font.BOLD, 10));
@@ -315,11 +312,11 @@ public class PanelGrafo extends JPanel {
             String id = n.getId();
             g2.drawString(id, n.getX()-fm.stringWidth(id)/2, n.getY()+fm.getAscent()/2-1);
         }
- 
+
         // ── Barra de estado inferior ─────────────────────────────────
         g2.setTransform(original);
         g2.setFont(new Font("Monospaced", Font.BOLD, 15));
- 
+
         String statusTxt = null;
         Color  statusCol = VERDE;
         if ("DIJKSTRA".equals(modoActual) && caminoDijkstra != null) {
@@ -337,20 +334,20 @@ public class PanelGrafo extends JPanel {
                         "   |   Peso acumulado: " + pesoAcum;
             statusCol = PURP;
         }
- 
+
         if (statusTxt != null) {
             FontMetrics fm = g2.getFontMetrics();
             int tw = fm.stringWidth(statusTxt);
             int barH = 34;
             int barY  = ph - barH;
- 
+
             g2.setColor(new Color(10, 12, 20, 210));
             g2.fillRoundRect(10, barY + 4, tw + 28, barH - 8, 10, 10);
             g2.setColor(statusCol);
             g2.drawString(statusTxt, 24, barY + barH/2 + fm.getAscent()/2 - 2);
         }
     }
- 
+
     // ── Algoritmos ───────────────────────────────────────────────────
     public void ejecutarDijkstra(VistaDijkstra vista) {
         limpiar();
@@ -358,19 +355,19 @@ public class PanelGrafo extends JPanel {
         if (nodos.size() < 2) { mostrarDialogoError(this, "Necesitas al menos 2 nodos."); return; }
         Nodo origen = buscarPorId("RA");
         if (origen == null) { mostrarDialogoError(this, "No existe el nodo RA."); return; }
- 
+
         String[] destinos = {"AA","AE","AH","AR","CI","FG","FP","FR","GL","IA","JQ","MM","OR","RG","RM","RR"};
         String destinoId  = mostrarDialogoSeleccion(this, "Selecciona el nodo destino:", "Dijkstra", destinos);
         if (destinoId == null) return;
- 
+
         Nodo destino = buscarPorId(destinoId);
         if (origen == destino) { mostrarDialogoError(this, "Origen y destino iguales."); return; }
- 
+
         Dijkstra.ejecutar(grafo, origen, destino);
         caminoDijkstra = Dijkstra.camino;
         distanciaTotal = Dijkstra.distancias.get(destino);
         modoActual     = "DIJKSTRA";
- 
+
         if (caminoDijkstra.size() <= 1) {
             mostrarDialogoError(this, "No existe camino.");
             caminoDijkstra = null;
@@ -378,7 +375,7 @@ public class PanelGrafo extends JPanel {
         vista.mostrarDijkstra(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra);
         canvas.repaint();
     }
- 
+
     public void ejecutarKruskal(VistaKruskal vista) {
         limpiar();
         if (grafo.getNodos().size() < 2) { mostrarDialogoError(this, "Necesitas al menos 2 nodos."); return; }
@@ -389,7 +386,7 @@ public class PanelGrafo extends JPanel {
         vista.mostrarKruskal(aristasKruskal, Kruskal.pesoTotal);
         animarKruskal();
     }
- 
+
     private void animarKruskal() {
         aristasAnimadas = 0;
         timerAnimacion  = new Timer(600, null);
@@ -399,7 +396,7 @@ public class PanelGrafo extends JPanel {
         });
         timerAnimacion.start(); canvas.repaint();
     }
- 
+
     public void limpiar() {
         if (timerAnimacion != null) timerAnimacion.stop();
         caminoDijkstra = null; aristasKruskal = null;
@@ -407,11 +404,11 @@ public class PanelGrafo extends JPanel {
         lblStatus.setText("Clic en nodo para seleccionar  ·  Clic en espacio vacío para agregar");
         canvas.repaint();
     }
- 
+
     private Nodo buscarPorId(String id) {
         return grafo.getNodos().stream().filter(n -> n.getId().equals(id)).findFirst().orElse(null);
     }
- 
+
     private Nodo buscarNodo(int x, int y) {
         for (Nodo n : grafo.getNodos()) {
             int dx = n.getX()-x, dy = n.getY()-y;
@@ -419,7 +416,7 @@ public class PanelGrafo extends JPanel {
         }
         return null;
     }
- 
+
     private boolean aristaEnCamino(Arista a, List<Nodo> cam) {
         if (cam == null || cam.size() < 2) return false;
         for (int i = 0; i < cam.size()-1; i++) {
@@ -428,7 +425,7 @@ public class PanelGrafo extends JPanel {
         }
         return false;
     }
- 
+
     private boolean aristaEnKruskal(Arista a) {
         if (aristasKruskal == null) return false;
         int lim = Math.min(aristasAnimadas, aristasKruskal.size());
@@ -439,7 +436,7 @@ public class PanelGrafo extends JPanel {
         }
         return false;
     }
- 
+
     // ── Botón compacto de la barra ────────────────────────────────────
     private JButton mkBtn(String txt, Color c1, Color c2) {
         JButton b = new JButton(txt) {
@@ -489,7 +486,7 @@ public class PanelGrafo extends JPanel {
         campo.setCaretColor(DLG_CIAN);
         campo.setFont(new Font("Monospaced", Font.PLAIN, 14));
         campo.setBorder(BorderFactory.createCompoundBorder(
-            new javax.swing.border.LineBorder(DLG_BORDE, 1, true),
+            new LineBorder(DLG_BORDE, 1, true),
             new EmptyBorder(6, 10, 6, 10)));
         campo.setPreferredSize(new Dimension(340, 38));
 
@@ -538,12 +535,12 @@ public class PanelGrafo extends JPanel {
         combo.setForeground(BLACK);
         combo.setFont(new Font("Monospaced", Font.BOLD, 14));
         combo.setBorder(BorderFactory.createCompoundBorder(
-            new javax.swing.border.LineBorder(TEXTO, 1, true),
+            new LineBorder(TEXTO, 1, true),
             new EmptyBorder(4, 8, 4, 8)));
         combo.setPreferredSize(new Dimension(340, 38));
-        
+
         // Renderizador del combo oscuro
-        combo.setRenderer(new javax.swing.DefaultListCellRenderer() {
+        combo.setRenderer(new DefaultListCellRenderer() {
             @Override public Component getListCellRendererComponent(
                     JList<?> list, Object value, int index, boolean sel, boolean focus) {
                 super.getListCellRendererComponent(list, value, index, sel, focus);
@@ -622,7 +619,7 @@ public class PanelGrafo extends JPanel {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(DLG_CARD);	
+                g2.setColor(DLG_CARD);
                 g2.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 16, 16);
                 g2.setColor(new Color(255,255,255, 18));
                 g2.setStroke(new BasicStroke(1f));

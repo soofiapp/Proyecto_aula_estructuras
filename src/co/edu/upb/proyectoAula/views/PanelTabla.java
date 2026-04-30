@@ -5,19 +5,13 @@ import java.util.Map;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
-<<<<<<< HEAD:src/co/edu/upb/proyectoAula/views/PanelTabla.java
+import javax.swing.border.*;
 
 import co.edu.upb.proyectoAula.VistaDijkstra;
 import co.edu.upb.proyectoAula.data_structures.Nodo;
 
-public class PanelTabla extends JPanel implements VistaDijkstra{
-
-    private JTable tabla;
-=======
-import javax.swing.border.*;
- 
 public class PanelTabla extends JPanel implements VistaDijkstra {
- 
+
     private static final Color BG_PANEL   = new Color(10,  12,  20);
     private static final Color BG_CARD    = new Color(18,  22,  38);
     private static final Color BG_ROW_A   = new Color(22,  28,  48);
@@ -26,20 +20,19 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
     private static final Color CIAN       = new Color(0,  200, 180);
     private static final Color VERDE      = new Color(34, 180,  90);
     private static final Color AZUL_H     = new Color(50, 120, 255);
-    private static final Color TEXTO      = new Color(220,230,255);
-    private static final Color TEXTO_DIM  = new Color(130,145,175);
-    private static final Color BORDE      = new Color(50,  65, 100);
- 
+    private static final Color TEXTO      = new Color(220, 230, 255);
+    private static final Color TEXTO_DIM  = new Color(130, 145, 175);
+    private static final Color BORDE      = new Color( 50,  65, 100);
+
     private JTable            tabla;
->>>>>>> 84702c4d348f6a69da29792c63c53a5280450564:src/co/edu/upb/proyectoAula/PanelTabla.java
     private DefaultTableModel modelo;
     private JLabel            lblTitulo;
     private JLabel            lblSub;
- 
+
     public PanelTabla() {
         setLayout(new BorderLayout(0, 0));
         setBackground(BG_PANEL);
- 
+
         // ── Encabezado ───────────────────────────────────────────────
         JPanel header = new JPanel(new BorderLayout()) {
             @Override protected void paintComponent(Graphics g) {
@@ -55,15 +48,15 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
         };
         header.setOpaque(false);
         header.setBorder(new EmptyBorder(18, 22, 14, 22));
- 
+
         lblTitulo = new JLabel("⚡  Dijkstra");
         lblTitulo.setFont(new Font("Monospaced", Font.BOLD, 20));
         lblTitulo.setForeground(CIAN);
- 
+
         lblSub = new JLabel("Ejecuta Dijkstra desde el grafo para ver resultados.");
         lblSub.setFont(new Font("Monospaced", Font.PLAIN, 12));
         lblSub.setForeground(TEXTO_DIM);
- 
+
         JPanel textos = new JPanel();
         textos.setOpaque(false);
         textos.setLayout(new BoxLayout(textos, BoxLayout.Y_AXIS));
@@ -71,29 +64,29 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
         textos.add(Box.createVerticalStrut(4));
         textos.add(lblSub);
         header.add(textos, BorderLayout.WEST);
- 
+
         // ── Tabla ────────────────────────────────────────────────────
         modelo = new DefaultTableModel();
         tabla  = buildTable();
- 
+
         JScrollPane scroll = new JScrollPane(tabla);
         scroll.getViewport().setBackground(BG_PANEL);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.setBackground(BG_PANEL);
- 
+
         // Scrollbar oscura
         scroll.getVerticalScrollBar().setUI(new DarkScrollBarUI());
         scroll.getHorizontalScrollBar().setUI(new DarkScrollBarUI());
- 
+
         JPanel contenido = new JPanel(new BorderLayout());
         contenido.setBackground(BG_PANEL);
         contenido.setBorder(new EmptyBorder(12, 14, 12, 14));
         contenido.add(scroll);
- 
+
         add(header,    BorderLayout.NORTH);
         add(contenido, BorderLayout.CENTER);
     }
- 
+
     private JTable buildTable() {
         JTable t = new JTable(modelo) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
@@ -108,7 +101,7 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
         t.setShowHorizontalLines(true);
         t.setShowVerticalLines(false);
         t.setIntercellSpacing(new Dimension(0, 1));
- 
+
         // Encabezado de tabla
         JTableHeader th = t.getTableHeader();
         th.setBackground(new Color(14, 18, 32));
@@ -116,10 +109,10 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
         th.setFont(new Font("Monospaced", Font.BOLD, 13));
         th.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, BORDE));
         th.setReorderingAllowed(false);
- 
+
         return t;
     }
- 
+
     @Override
     public void mostrarDijkstra(Map<Nodo, Integer> distancias,
                                  Map<Nodo, Nodo>    anteriores,
@@ -130,12 +123,12 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
         modelo.addColumn("Distancia mínima");
         modelo.addColumn("Nodo anterior");
         modelo.addColumn("¿En camino óptimo?");
- 
+
         lblTitulo.setText("⚡  Dijkstra — Distancias mínimas");
         lblSub.setText(camino != null
             ? "Camino óptimo encontrado  ·  " + camino.size() + " nodos"
             : "Sin camino disponible.");
- 
+
         for (Map.Entry<Nodo, Integer> e : distancias.entrySet()) {
             Nodo n        = e.getKey();
             int  dist     = e.getValue();
@@ -148,7 +141,7 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
                 enCam ? "✔  Sí" : "No"
             });
         }
- 
+
         tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override public Component getTableCellRendererComponent(
                     JTable t, Object val, boolean sel, boolean foc, int row, int col) {
@@ -171,7 +164,7 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
         });
         tabla.repaint();
     }
- 
+
     public void mostrarRecorrido(List<Nodo> orden, String tipo) {
         modelo.setRowCount(0);
         modelo.setColumnCount(0);
@@ -194,20 +187,22 @@ public class PanelTabla extends JPanel implements VistaDijkstra {
             modelo.addRow(new Object[]{i + 1, orden.get(i).getId()});
         tabla.repaint();
     }
- 
+
     // ── ScrollBar oscura ─────────────────────────────────────────────
     static class DarkScrollBarUI extends javax.swing.plaf.basic.BasicScrollBarUI {
         @Override protected void configureScrollBarColors() {
-            thumbColor    = new Color(50, 65, 100);
-            trackColor    = new Color(14, 18, 32);
-            thumbDarkShadowColor = new Color(14, 18, 32);
-            thumbHighlightColor  = new Color(50, 65, 100);
-            thumbLightShadowColor = new Color(14, 18, 32);
+            thumbColor            = new Color(50,  65, 100);
+            trackColor            = new Color(14,  18,  32);
+            thumbDarkShadowColor  = new Color(14,  18,  32);
+            thumbHighlightColor   = new Color(50,  65, 100);
+            thumbLightShadowColor = new Color(14,  18,  32);
         }
         @Override protected JButton createDecreaseButton(int o) { return zeroButton(); }
         @Override protected JButton createIncreaseButton(int o) { return zeroButton(); }
         private JButton zeroButton() {
-            JButton b = new JButton(); b.setPreferredSize(new Dimension(0,0)); return b;
+            JButton b = new JButton();
+            b.setPreferredSize(new Dimension(0, 0));
+            return b;
         }
         @Override protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
             Graphics2D g2 = (Graphics2D) g;

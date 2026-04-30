@@ -2,19 +2,16 @@ package co.edu.upb.proyectoAula.views;
 
 import javax.swing.*;
 import javax.swing.table.*;
-<<<<<<< HEAD:src/co/edu/upb/proyectoAula/views/PanelKruskal.java
+import javax.swing.border.*;
 
 import co.edu.upb.proyectoAula.VistaKruskal;
 import co.edu.upb.proyectoAula.data_structures.Arista;
 
-=======
-import javax.swing.border.*;
->>>>>>> 84702c4d348f6a69da29792c63c53a5280450564:src/co/edu/upb/proyectoAula/PanelKruskal.java
 import java.awt.*;
 import java.util.List;
- 
+
 public class PanelKruskal extends JPanel implements VistaKruskal {
- 
+
     private static final Color BG_PANEL   = new Color(10,  12,  20);
     private static final Color BG_CARD    = new Color(18,  22,  38);
     private static final Color BG_ROW_A   = new Color(22,  28,  48);
@@ -25,17 +22,17 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
     private static final Color TEXTO      = new Color(220, 230, 255);
     private static final Color TEXTO_DIM  = new Color(130, 145, 175);
     private static final Color BORDE      = new Color( 50,  65, 100);
- 
+
     private JTable            tabla;
     private DefaultTableModel modelo;
     private JLabel            lblTitulo;
     private JLabel            lblSub;
     private JLabel            lblPeso;
- 
+
     public PanelKruskal() {
         setLayout(new BorderLayout(0, 0));
         setBackground(BG_PANEL);
- 
+
         // ── Encabezado ───────────────────────────────────────────────
         JPanel header = new JPanel(new BorderLayout()) {
             @Override protected void paintComponent(Graphics g) {
@@ -50,19 +47,19 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
         };
         header.setOpaque(false);
         header.setBorder(new EmptyBorder(18, 22, 14, 22));
- 
+
         lblTitulo = new JLabel("🌿  Kruskal");
         lblTitulo.setFont(new Font("Monospaced", Font.BOLD, 20));
         lblTitulo.setForeground(PURP_L);
- 
+
         lblSub = new JLabel("Ejecuta Kruskal desde el grafo para ver el árbol de expansión mínima.");
         lblSub.setFont(new Font("Monospaced", Font.PLAIN, 12));
         lblSub.setForeground(TEXTO_DIM);
- 
+
         lblPeso = new JLabel("");
         lblPeso.setFont(new Font("Monospaced", Font.BOLD, 13));
         lblPeso.setForeground(PURP_L);
- 
+
         JPanel textos = new JPanel();
         textos.setOpaque(false);
         textos.setLayout(new BoxLayout(textos, BoxLayout.Y_AXIS));
@@ -72,26 +69,26 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
         textos.add(Box.createVerticalStrut(4));
         textos.add(lblPeso);
         header.add(textos, BorderLayout.WEST);
- 
+
         // ── Tabla ────────────────────────────────────────────────────
         modelo = new DefaultTableModel();
         tabla  = buildTable();
- 
+
         JScrollPane scroll = new JScrollPane(tabla);
         scroll.getViewport().setBackground(BG_PANEL);
         scroll.setBorder(BorderFactory.createEmptyBorder());
         scroll.getVerticalScrollBar().setUI(new PanelTabla.DarkScrollBarUI());
         scroll.getHorizontalScrollBar().setUI(new PanelTabla.DarkScrollBarUI());
- 
+
         JPanel contenido = new JPanel(new BorderLayout());
         contenido.setBackground(BG_PANEL);
         contenido.setBorder(new EmptyBorder(12, 14, 12, 14));
         contenido.add(scroll);
- 
+
         add(header,    BorderLayout.NORTH);
         add(contenido, BorderLayout.CENTER);
     }
- 
+
     private JTable buildTable() {
         JTable t = new JTable(modelo) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
@@ -106,7 +103,7 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
         t.setShowHorizontalLines(true);
         t.setShowVerticalLines(false);
         t.setIntercellSpacing(new Dimension(0, 1));
- 
+
         JTableHeader th = t.getTableHeader();
         th.setBackground(new Color(14, 18, 32));
         th.setForeground(PURP_L);
@@ -115,7 +112,7 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
         th.setReorderingAllowed(false);
         return t;
     }
- 
+
     @Override
     public void mostrarKruskal(List<Arista> aristas, int pesoTotal) {
         modelo.setRowCount(0);
@@ -124,11 +121,11 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
         modelo.addColumn("Arista");
         modelo.addColumn("Peso");
         modelo.addColumn("Acción");
- 
+
         lblTitulo.setText("🌿  Kruskal — Árbol de expansión mínima");
         lblSub.setText(aristas.size() + " aristas seleccionadas");
         lblPeso.setText("Peso total del árbol:  " + pesoTotal);
- 
+
         tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override public Component getTableCellRendererComponent(
                     JTable t, Object val, boolean sel, boolean foc, int row, int col) {
@@ -145,7 +142,7 @@ public class PanelKruskal extends JPanel implements VistaKruskal {
                 return this;
             }
         });
- 
+
         for (int i = 0; i < aristas.size(); i++) {
             Arista a = aristas.get(i);
             modelo.addRow(new Object[]{
