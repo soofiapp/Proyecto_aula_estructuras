@@ -2,6 +2,9 @@ package co.edu.upb.proyectoAula;
 
 import java.util.HashMap;
 
+import co.edu.upb.proyectoAula.data_structures.Grafo;
+import co.edu.upb.proyectoAula.data_structures.Nodo;
+
 public class GrafoMapa {
 
     public static Grafo crear() {

@@ -1,6 +1,13 @@
 package co.edu.upb.proyectoAula;
 
 import javax.swing.*;
+
+import co.edu.upb.proyectoAula.data_structures.Grafo;
+import co.edu.upb.proyectoAula.views.PanelGrafo;
+import co.edu.upb.proyectoAula.views.PanelKruskal;
+import co.edu.upb.proyectoAula.views.PanelMatrizAdyacencia;
+import co.edu.upb.proyectoAula.views.PanelTabla;
+
 import java.awt.*;
 
 public class Main extends JFrame {
@@ -16,7 +23,7 @@ public class Main extends JFrame {
         tabs.addTab("Grafo",      panelGrafo);
         tabs.addTab("Dijkstra",   panelDijkstra);
         tabs.addTab("Kruskal",    panelKruskal);
-        tabs.addTab("Adyacencia", new MatrizAdyacencia(grafo));
+        tabs.addTab("Adyacencia", new PanelMatrizAdyacencia(grafo));
 
         JButton btnDijkstra = crearBoton("▶ Dijkstra", new Color(34,  150, 80));
         JButton btnKruskal  = crearBoton("▶ Kruskal",  new Color(130,  40, 180));
