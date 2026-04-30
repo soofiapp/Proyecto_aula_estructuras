@@ -13,8 +13,8 @@ import java.awt.image.BufferedImage;
 public class VentanaLogin extends JFrame {
  
     // ── Credenciales de administrador ────────────────────────────────
-    private static final String USUARIO_ADMIN = "admin";
-    private static final String PASS_ADMIN    = "admin123";
+    private static final String USUARIO_ADMIN = "a";
+    private static final String PASS_ADMIN    = "a";
  
     // ── Componentes ─────────────────────────────────────────────────
     private JTextField     txtUsuario;
@@ -453,4 +453,3 @@ public class VentanaLogin extends JFrame {
         SwingUtilities.invokeLater(VentanaLogin::new);
     }
 }
- 
