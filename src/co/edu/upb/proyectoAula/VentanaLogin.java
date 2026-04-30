@@ -13,8 +13,8 @@ import java.awt.image.BufferedImage;
 public class VentanaLogin extends JFrame {
  
     // ── Credenciales de administrador ────────────────────────────────
-    private static final String USUARIO_ADMIN = "a";
-    private static final String PASS_ADMIN    = "a";
+    private static final String USUARIO_ADMIN = "admin";
+    private static final String PASS_ADMIN    = "admin123";
  
     // ── Componentes ─────────────────────────────────────────────────
     private JTextField     txtUsuario;
@@ -143,9 +143,22 @@ public class VentanaLogin extends JFrame {
  
         // ── Campo usuario ────────────────────────────────────────────
         JLabel lUser = crearEtiqueta("USUARIO");
-        txtUsuario   = crearCampoTexto("Ingrese usuario");
+        lUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel userRow = new JPanel(new BorderLayout(0, 0));
+        userRow.setOpaque(false);
+        userRow.setMaximumSize(new Dimension(280, 40));
+        userRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        txtUsuario = crearCampoTexto("Ingrese usuario");
+        txtUsuario.setHorizontalAlignment(JTextField.CENTER);
+
+        // Espacio vacío para compensar el ojito
+        JLabel espacio = new JLabel("   ");
+        espacio.setPreferredSize(new Dimension(20, 0));
+
+        userRow.add(txtUsuario, BorderLayout.CENTER);
+        userRow.add(espacio, BorderLayout.EAST);
         lUser.setAlignmentX(Component.CENTER_ALIGNMENT); 
-        txtUsuario.setMaximumSize(new Dimension(280, 44)); 
         txtUsuario.setAlignmentX(Component.CENTER_ALIGNMENT);
         txtUsuario.setHorizontalAlignment(JTextField.CENTER);
         txtUsuario.setBorder(new CompoundBorder(
@@ -171,8 +184,8 @@ public class VentanaLogin extends JFrame {
         lblMostrarPass = new JLabel("👁");
         lblMostrarPass.setForeground(TEXTO_APAGADO);
         lblMostrarPass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lblMostrarPass.setFont(new Font("Serif", Font.PLAIN, 15));
-        lblMostrarPass.setBorder(new EmptyBorder(0, 6, 0, 0));
+        lblMostrarPass.setFont(new Font("Serif", Font.PLAIN, 12));
+        lblMostrarPass.setBorder(new EmptyBorder(0, 4, 0, 0));
         lblMostrarPass.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 mostrandoPass = !mostrandoPass;
@@ -231,21 +244,27 @@ public class VentanaLogin extends JFrame {
  
         // ── Botón cerrar (X) esquina ─────────────────────────────────
         JButton btnX = new JButton("✕") {
-            @Override 
-            protected void paintComponent(Graphics g) {
-                    Graphics2D g2 = (Graphics2D) g;
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                        RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(new Color(255, 60, 60, 180));
-                    g2.fillOval(0, 0, getWidth(), getHeight());
-                    super.paintComponent(g);
+            @Override protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                    RenderingHints.VALUE_ANTIALIAS_ON);
+                Color bg = getModel().isRollover()
+                    ? new Color(220, 50, 50)
+                    : new Color(160, 40, 40);
+                g2.setColor(bg);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+                g2.setFont(new Font("Dialog", Font.BOLD, 13));
+                g2.setColor(Color.WHITE);
+                FontMetrics fm = g2.getFontMetrics();
+                g2.drawString(getText(),
+                    (getWidth()  - fm.stringWidth(getText())) / 2,
+                    (getHeight() + fm.getAscent() - fm.getDescent()) / 2);
             }
         };
-        btnX.setForeground(TEXTO_APAGADO);
-        btnX.setFont(new Font("Dialog", Font.PLAIN, 13));
-        btnX.setOpaque(false); btnX.setContentAreaFilled(false);
-        btnX.setBorderPainted(false); btnX.setFocusPainted(false);
-        btnX.setBounds(getWidth()-40, 8, 28, 28);
+        btnX.setOpaque(false);
+        btnX.setContentAreaFilled(false);
+        btnX.setBorderPainted(false);
+        btnX.setFocusPainted(false);
         btnX.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnX.addActionListener(e -> System.exit(0));
  
@@ -260,7 +279,7 @@ public class VentanaLogin extends JFrame {
         card.add(Box.createVerticalStrut(22));
         card.add(lUser);
         card.add(Box.createVerticalStrut(6));
-        card.add(txtUsuario);
+        card.add(userRow);
         card.add(Box.createVerticalStrut(16));
         card.add(lPass);
         card.add(Box.createVerticalStrut(6));
@@ -272,21 +291,25 @@ public class VentanaLogin extends JFrame {
         card.add(Box.createVerticalStrut(16));
         card.add(lblPie);
  
-        // Añadir botón X sobre el card (layout absoluto del raíz)
+        // ── Añadir botón X en glass pane ─────────────────────────────
         raiz.add(card);
         setContentPane(raiz);
- 
-        // Posicionar botón X (hacerlo en glass pane)
+
         JPanel glass = new JPanel(null);
         glass.setOpaque(false);
         setGlassPane(glass);
+        glass.setSize(480, 560);   // tamaño fijo de la ventana
+        glass.add(btnX);
+        btnX.setBounds(465, 7, 28, 28);
         glass.setVisible(true);
- 
+
+        // Ajuste dinámico por si cambia tamaño
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                btnX.setBounds(getWidth()-48, 10, 30, 30);
-                glass.add(btnX);
+                glass.setSize(getWidth(), getHeight());
+                btnX.setBounds(getWidth() - 44, 10, 28, 28);
                 glass.revalidate();
+                glass.repaint();
             }
         });
  
@@ -362,7 +385,7 @@ public class VentanaLogin extends JFrame {
             new LineBorder(BORDE_INPUT, 1, true),
             new EmptyBorder(8, 12, 8, 12)));
         tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
-        tf.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tf.setAlignmentX(Component.CENTER_ALIGNMENT);
  
         // Resaltar borde en foco
         tf.addFocusListener(new FocusAdapter() {

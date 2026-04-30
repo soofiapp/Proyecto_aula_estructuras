@@ -49,7 +49,7 @@ public class Main extends JFrame {
         });
         btnLimpiar.addActionListener(e -> panelGrafo.limpiar());
 
-        JLabel lblEstado = new JLabel("Graf-icador Pro  ·  Dijkstra & Kruskal Explorer");
+        JLabel lblEstado = new JLabel("Graf-icador Pro  ·  Explorador Dijkstra y Kruskal");
         lblEstado.setFont(new Font("Monospaced", Font.PLAIN, 11));
         lblEstado.setForeground(TEXTO_APAGADO);
 
@@ -90,7 +90,7 @@ public class Main extends JFrame {
         raiz.add(barra, BorderLayout.SOUTH);
 
         setContentPane(raiz);
-        setTitle("Graf-icador Pro — Dijkstra & Kruskal Explorer");
+        setTitle("Graf-icador Pro");
         setSize(1100, 780);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -110,9 +110,9 @@ public class Main extends JFrame {
         tabs.setForeground(TEXTO_CLARO);
         tabs.setFont(new Font("Monospaced", Font.BOLD, 13));
         tabs.setOpaque(true);
-        tabs.addTab("  ⬡  Grafo     ", grafo);
+        tabs.addTab("  ⬡  Grafo  ", grafo);
         tabs.addTab("  ⚡  Dijkstra  ", dijkstra);
-        tabs.addTab("  🌿  Kruskal   ", kruskal);
+        tabs.addTab("  🌿  Kruskal  ", kruskal);
         tabs.addTab("  ⊞  Adyacencia", matriz);
         return tabs;
     }
