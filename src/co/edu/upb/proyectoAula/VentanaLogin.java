@@ -36,10 +36,11 @@ public class VentanaLogin extends JFrame {
     private static final Color ROJO_ERROR    = new Color(255,  80,  80);
  
     public VentanaLogin() {
-        setTitle("GRAF-ICADOR Pro — Acceso");
+        setTitle("Graf-icador Pro");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);              // ventana sin bordes del SO
-        setSize(480, 560);
+        setSize(500, 560);
+        
         setLocationRelativeTo(null);
         setBackground(new Color(0, 0, 0, 0));
  
@@ -104,7 +105,7 @@ public class VentanaLogin extends JFrame {
             }
         };
         card.setOpaque(false);
-        card.setPreferredSize(new Dimension(390, 480));
+        card.setPreferredSize(new Dimension(410, 480));
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(new EmptyBorder(40, 44, 36, 44));
  
@@ -115,12 +116,12 @@ public class VentanaLogin extends JFrame {
         lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
  
         JLabel lblTitulo = new JLabel("Graf-icador Pro");
-        lblTitulo.setFont(loadFont("Monospaced", Font.BOLD, 24));
+        lblTitulo.setFont(loadFont("Monospaced", Font.BOLD, 26));
         lblTitulo.setForeground(TEXTO_CLARO);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
  
-        JLabel lblSub = new JLabel("Dijkstra & Kruskal Explorer");
-        lblSub.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        JLabel lblSub = new JLabel("Explorador Dijkstra & Kruskal");
+        lblSub.setFont(new Font("Monospaced", Font.PLAIN, 14));
         lblSub.setForeground(ACENTO_CIAN);
         lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
  
@@ -159,7 +160,7 @@ public class VentanaLogin extends JFrame {
         lPass.setAlignmentX(Component.CENTER_ALIGNMENT); 
         JPanel passRow = new JPanel(new BorderLayout(0, 0));
         passRow.setOpaque(false);
-        passRow.setMaximumSize(new Dimension(280, 44));
+        passRow.setMaximumSize(new Dimension(280, 40));
         passRow.setAlignmentX(Component.CENTER_ALIGNMENT);
  
         txtPassword = new JPasswordField();
@@ -170,7 +171,7 @@ public class VentanaLogin extends JFrame {
         lblMostrarPass = new JLabel("👁");
         lblMostrarPass.setForeground(TEXTO_APAGADO);
         lblMostrarPass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lblMostrarPass.setFont(new Font("Serif", Font.PLAIN, 18));
+        lblMostrarPass.setFont(new Font("Serif", Font.PLAIN, 15));
         lblMostrarPass.setBorder(new EmptyBorder(0, 6, 0, 0));
         lblMostrarPass.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -219,26 +220,25 @@ public class VentanaLogin extends JFrame {
         btnIngresar.setBorderPainted(false);
         btnIngresar.setFocusPainted(false);
         btnIngresar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnIngresar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
+        btnIngresar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         btnIngresar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
  
         // ── Pie de tarjeta ───────────────────────────────────────────
         JLabel lblPie = new JLabel("Acceso exclusivo para administradores");
-        lblPie.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        lblPie.setFont(new Font("Monospaced", Font.PLAIN, 12));
         lblPie.setForeground(TEXTO_APAGADO);
         lblPie.setAlignmentX(Component.CENTER_ALIGNMENT);
  
         // ── Botón cerrar (X) esquina ─────────────────────────────────
         JButton btnX = new JButton("✕") {
-            @Override protected void paintComponent(Graphics g) {
-                if (getModel().isRollover()) {
+            @Override 
+            protected void paintComponent(Graphics g) {
                     Graphics2D g2 = (Graphics2D) g;
                     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                         RenderingHints.VALUE_ANTIALIAS_ON);
                     g2.setColor(new Color(255, 60, 60, 180));
                     g2.fillOval(0, 0, getWidth(), getHeight());
-                }
-                super.paintComponent(g);
+                    super.paintComponent(g);
             }
         };
         btnX.setForeground(TEXTO_APAGADO);
