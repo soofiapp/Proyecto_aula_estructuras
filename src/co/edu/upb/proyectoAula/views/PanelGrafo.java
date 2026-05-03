@@ -14,7 +14,9 @@ import co.edu.upb.proyectoAula.data_structures.Nodo;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.awt.geom.AffineTransform;
 
 public class PanelGrafo extends JPanel {
@@ -229,23 +231,35 @@ public class PanelGrafo extends JPanel {
         g2.translate(-centro[0], -centro[1]);
 
         // ── Aristas ──────────────────────────────────────────────────
+        Map<String, List<Arista>> grupos = new LinkedHashMap<>();
         for (Arista a : grafo.getAristas()) {
+            String key = menorId(a.getOrigen().getId(), a.getDestino().getId()) 
+                       + "_" 
+                       + mayorId(a.getOrigen().getId(), a.getDestino().getId());
+            grupos.computeIfAbsent(key, k -> new java.util.ArrayList<>()).add(a);
+        }
+
+        for (List<Arista> grupo : grupos.values()) {
+            Arista a = grupo.get(0);
+            
+            if (a.getOrigen() == null || a.getDestino() == null) continue;
+            
             int x1 = a.getOrigen().getX(),  y1 = a.getOrigen().getY();
             int x2 = a.getDestino().getX(), y2 = a.getDestino().getY();
 
-            boolean enDij = aristaEnCamino(a, caminoDijkstra);
-            boolean enKru = aristaEnKruskal(a);
+            boolean enDij = grupo.stream().anyMatch(ar -> aristaEnCamino(ar, caminoDijkstra));
+            boolean enKru = grupo.stream().anyMatch(ar -> aristaEnKruskal(ar));
 
             Color color;
             float grosor;
-            if      (enDij) { color = VERDE;                        grosor = 5f; }
-            else if (enKru) { color = PURP;                         grosor = 5f; }
-            else            { color = new Color(40, 55, 90);         grosor = 1.5f; }
+            if      (enDij) { color = VERDE;               grosor = 5f;   }
+            else if (enKru) { color = PURP;                grosor = 5f;   }
+            else            { color = new Color(40,55,90); grosor = 1.5f; }
 
-            // Resplandor en aristas del camino
+            // Resplandor
             if (enDij || enKru) {
                 g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 40));
-                g2.setStroke(new BasicStroke(grosor + 6, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.setStroke(new BasicStroke(grosor+6, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 g2.drawLine(x1, y1, x2, y2);
             }
 
@@ -253,16 +267,22 @@ public class PanelGrafo extends JPanel {
             g2.setStroke(new BasicStroke(grosor, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2.drawLine(x1, y1, x2, y2);
 
-            // Peso de la arista
+            // Construir etiqueta con todos los pesos del grupo
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < grupo.size(); i++) {
+                if (i > 0) sb.append(",");
+                sb.append(grupo.get(i).getPeso());
+            }
+            String pesoLabel = sb.toString();
+
             int mx = (x1+x2)/2, my = (y1+y2)/2;
-            String peso = String.valueOf(a.getPeso());
             g2.setFont(new Font("Monospaced", Font.BOLD, 9));
             FontMetrics fmP = g2.getFontMetrics();
-            int pw2 = fmP.stringWidth(peso);
+            int pw2 = fmP.stringWidth(pesoLabel);
             g2.setColor(new Color(10, 12, 20, 200));
             g2.fillRoundRect(mx-pw2/2-3, my-10, pw2+6, 13, 4, 4);
             g2.setColor(enDij||enKru ? color.brighter() : TEXTO_DIM);
-            g2.drawString(peso, mx-pw2/2, my);
+            g2.drawString(pesoLabel, mx-pw2/2, my);
         }
 
         // ── Nodos ────────────────────────────────────────────────────
@@ -347,7 +367,7 @@ public class PanelGrafo extends JPanel {
             g2.drawString(statusTxt, 24, barY + barH/2 + fm.getAscent()/2 - 2);
         }
     }
-
+    
     // ── Algoritmos ───────────────────────────────────────────────────
     public void ejecutarDijkstra(VistaDijkstra vista) {
         limpiar();
@@ -654,6 +674,13 @@ public class PanelGrafo extends JPanel {
         fondo.add(titleBar, BorderLayout.NORTH);
         dlg.setContentPane(fondo);
         return dlg;
+    }
+    
+    private String menorId(String a, String b) {
+        return a.compareTo(b) <= 0 ? a : b;
+    }
+    private String mayorId(String a, String b) {
+        return a.compareTo(b) > 0 ? a : b;
     }
 
     /** Botón estilizado para diálogos dark */

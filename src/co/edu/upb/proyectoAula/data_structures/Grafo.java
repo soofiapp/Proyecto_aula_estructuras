@@ -11,6 +11,7 @@ public class Grafo {
     }
 
     public void agregarArista(Nodo a, Nodo b, int peso) {
+        if (a == null || b == null) return; // ignorar si algún nodo no existe
         aristas.add(new Arista(a, b, peso));
     }
 

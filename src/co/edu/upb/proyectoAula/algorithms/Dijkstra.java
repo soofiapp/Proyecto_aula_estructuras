@@ -120,16 +120,16 @@ public class Dijkstra {
             pendientes.remove(actual);
 
             for (Arista a : grafo.getAristas()) {
-                Nodo vecino = null;
-                if (a.getOrigen() == actual) vecino = a.getDestino();
-                else if (a.getDestino() == actual) vecino = a.getOrigen();
+                // Solo aristas que SALEN de actual (grafo dirigido)
+                if (a.getOrigen() != actual) continue;
+                
+                Nodo vecino = a.getDestino();
+                if (!pendientes.contains(vecino)) continue;
 
-                if (vecino != null && pendientes.contains(vecino)) {
-                    int nueva = distancias.get(actual) + a.getPeso();
-                    if (nueva < distancias.get(vecino)) {
-                        distancias.put(vecino, nueva);
-                        anteriores.put(vecino, actual);
-                    }
+                int nueva = distancias.get(actual) + a.getPeso();
+                if (nueva < distancias.get(vecino)) {
+                    distancias.put(vecino, nueva);
+                    anteriores.put(vecino, actual);
                 }
             }
         }
