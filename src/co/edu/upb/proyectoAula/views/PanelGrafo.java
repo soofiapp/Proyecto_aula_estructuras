@@ -269,9 +269,14 @@ public class PanelGrafo extends JPanel {
 
             // Construir etiqueta con todos los pesos del grupo
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < grupo.size(); i++) {
-                if (i > 0) sb.append(",");
-                sb.append(grupo.get(i).getPeso());
+            long distinct = grupo.stream().mapToInt(ar -> ar.getPeso()).distinct().count();
+            if (distinct == 1) {
+                sb.append(grupo.get(0).getPeso());
+            } else {
+                for (int i = 0; i < grupo.size(); i++) {
+                    if (i > 0) sb.append(",");
+                    sb.append(grupo.get(i).getPeso());
+                }
             }
             String pesoLabel = sb.toString();
 
