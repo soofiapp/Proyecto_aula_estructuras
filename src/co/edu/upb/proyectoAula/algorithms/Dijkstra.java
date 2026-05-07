@@ -5,6 +5,7 @@ import java.util.*;
 import co.edu.upb.proyectoAula.data_structures.Arista;
 import co.edu.upb.proyectoAula.data_structures.Grafo;
 import co.edu.upb.proyectoAula.data_structures.Nodo;
+import co.edu.upb.proyectoAula.data_structures.ColaPrioridad;
 
 public class Dijkstra {
 
@@ -73,70 +74,49 @@ public class Dijkstra {
         anteriores.clear();
         camino.clear();
 
-        List<Nodo> pendientes = new ArrayList<>(grafo.getNodos());
+        // ── PASO 1: Inicialización ───────────────────────────────────
+        int capacidad = grafo.getNodos().size();
+        ColaPrioridad cola = new ColaPrioridad(capacidad);
 
-        // ── PASO 1: Inicialización
-        // Asignar distancia INFINITO a todos los nodos
-        // Asignar null como nodo anterior para todos los nodos
-        // Asignar distancia 0 al nodo origen
-        // Crear la lista de nodos pendientes con todos los nodos del grafo
-        
         for (Nodo n : grafo.getNodos()) {
             distancias.put(n, Integer.MAX_VALUE);
             anteriores.put(n, null);
         }
         distancias.put(origen, 0);
+        cola.insertar(origen, 0); // solo inserta el origen con distancia 0
 
-        // ── PASO 2: Bucle principal
-        // Repetir mientras haya nodos en pendientes:
-        	//2a: Encontrar el nodo con menor distancia en pendientes
-        // recorrer todos los pendientes comparando distancias
+        // Inserta el resto con distancia infinita
+        for (Nodo n : grafo.getNodos()) {
+            if (n != origen) cola.insertar(n, Integer.MAX_VALUE);
+        }
 
-        //Condición de parada — salir si no hay nodo alcanzable o si ya llegamos al destino
+        // ── PASO 2: Bucle principal ──────────────────────────────────
+        while (!cola.estaVacia()) {
 
+            // 2a: Extraer el nodo con menor distancia — O(log n)
+            Nodo actual = cola.extraerMinimo();
 
-            //2b: Eliminar el nodo actual de pendientes
+            if (actual == null || distancias.get(actual) == Integer.MAX_VALUE) break;
+            if (actual == destino) break;
 
-
-            // 2c: Revisar cada arista del grafo Para cada arista, identificar si conecta con el nodo actual
-            // y si el vecino aún está en pendientes, relajar la distancia
-
-
-        while (!pendientes.isEmpty()) {
-            Nodo actual = null;
-            int menor = Integer.MAX_VALUE;
-
-            for (Nodo n : pendientes) {
-                int d = distancias.get(n);
-                if (d < menor) {
-                    menor = d;
-                    actual = n;
-                }
-            }
-
-            if (actual == null || menor == Integer.MAX_VALUE) break; // no alcanzable
-            if (actual == destino) break; // primer destino encontrado con costo mínimo
-
-            pendientes.remove(actual);
-
+            // 2b: Relajar aristas
             for (Arista a : grafo.getAristas()) {
-                // Solo aristas que SALEN de actual (grafo dirigido)
-                if (a.getOrigen() != actual) continue;
-                
-                Nodo vecino = a.getDestino();
-                if (!pendientes.contains(vecino)) continue;
+                Nodo vecino = null;
+                if (a.getOrigen() == actual) vecino = a.getDestino();
 
-                int nueva = distancias.get(actual) + a.getPeso();
-                if (nueva < distancias.get(vecino)) {
-                    distancias.put(vecino, nueva);
-                    anteriores.put(vecino, actual);
+                if (vecino != null && cola.contiene(vecino)) {
+                    int nueva = distancias.get(actual) + a.getPeso();
+                    if (nueva < distancias.get(vecino)) {
+                        distancias.put(vecino, nueva);
+                        anteriores.put(vecino, actual);
+                        // Actualizar en el heap — O(log n)
+                        cola.actualizarDistancia(vecino, nueva);
+                    }
                 }
             }
         }
 
-        // ── PASO 3: Reconstrucción del camino
-        //Recorrer el mapa "anteriores" desde destino hasta origen e insertar cada nodo al inicio de la lista "camino"
-
+        // ── PASO 3: Reconstrucción del camino ────────────────────────
         if (distancias.get(destino) != Integer.MAX_VALUE) {
             Nodo paso = destino;
             while (paso != null) {
