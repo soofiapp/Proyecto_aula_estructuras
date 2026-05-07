@@ -52,6 +52,14 @@ public class PanelGrafo extends JPanel {
     private double offsetX = 0;
     private double offsetY = 0;
 
+    // ── Animación del bus ────────────────────────────────────────────
+    private Timer   timerBus;
+    private int     busSegmento = 0;
+    private double  busT        = 0.0;
+    private double  busX        = 0;
+    private double  busY        = 0;
+    private boolean busActivo   = false;
+
     private JPanel barraBotones;
     private JPanel canvas;
     private JLabel lblZoom;
@@ -338,6 +346,35 @@ public class PanelGrafo extends JPanel {
             g2.drawString(id, n.getX()-fm.stringWidth(id)/2, n.getY()+fm.getAscent()/2-1);
         }
 
+        // ── Bus animado ──────────────────────────────────────────────
+        if (busActivo) {
+            int bx = (int) busX, by = (int) busY;
+            int bw = 18, bh = 12;
+
+            // Sombra
+            g2.setColor(new Color(0, 0, 0, 80));
+            g2.fillRoundRect(bx - bw/2 + 2, by - bh/2 + 3, bw, bh, 5, 5);
+
+            // Cuerpo del bus
+            g2.setColor(new Color(255, 200, 0));
+            g2.fillRoundRect(bx - bw/2, by - bh/2, bw, bh, 5, 5);
+
+            // Borde
+            g2.setColor(new Color(180, 130, 0));
+            g2.setStroke(new BasicStroke(1f));
+            g2.drawRoundRect(bx - bw/2, by - bh/2, bw, bh, 5, 5);
+
+            // Ventanas
+            g2.setColor(new Color(100, 180, 255, 180));
+            g2.fillRect(bx - bw/2 + 2, by - bh/2 + 2, 4, 4);
+            g2.fillRect(bx - bw/2 + 8, by - bh/2 + 2, 4, 4);
+
+            // Ruedas
+            g2.setColor(new Color(40, 40, 40));
+            g2.fillOval(bx - bw/2 + 2, by + bh/2 - 3, 4, 4);
+            g2.fillOval(bx + bw/2 - 6, by + bh/2 - 3, 4, 4);
+        }
+
         // ── Barra de estado inferior ─────────────────────────────────
         g2.setTransform(original);
         g2.setFont(new Font("Monospaced", Font.BOLD, 15));
@@ -399,6 +436,7 @@ public class PanelGrafo extends JPanel {
         }
         vista.mostrarDijkstra(Dijkstra.distancias, Dijkstra.anteriores, caminoDijkstra);
         canvas.repaint();
+        animarBus();
     }
 
     public void ejecutarKruskal(VistaKruskal vista) {
@@ -422,8 +460,43 @@ public class PanelGrafo extends JPanel {
         timerAnimacion.start(); canvas.repaint();
     }
 
+    private void animarBus() {
+        if (caminoDijkstra == null || caminoDijkstra.size() < 2) return;
+        busSegmento = 0;
+        busT        = 0.0;
+        busActivo   = true;
+
+        Nodo inicio = caminoDijkstra.get(0);
+        busX = inicio.getX();
+        busY = inicio.getY();
+
+        if (timerBus != null) timerBus.stop();
+
+        timerBus = new Timer(16, e -> {
+            busT += 0.03;
+            if (busT >= 1.0) {
+                busT = 0.0;
+                busSegmento++;
+                if (busSegmento >= caminoDijkstra.size() - 1) {
+                    busActivo = false;
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+            if (busActivo) {
+                Nodo desde = caminoDijkstra.get(busSegmento);
+                Nodo hasta = caminoDijkstra.get(busSegmento + 1);
+                busX = desde.getX() + (hasta.getX() - desde.getX()) * busT;
+                busY = desde.getY() + (hasta.getY() - desde.getY()) * busT;
+            }
+            canvas.repaint();
+        });
+        timerBus.start();
+    }
+
     public void limpiar() {
         if (timerAnimacion != null) timerAnimacion.stop();
+        if (timerBus != null) timerBus.stop();
+        busActivo = false;
         caminoDijkstra = null; aristasKruskal = null;
         aristasAnimadas = 0; modoActual = "";
         lblStatus.setText("Clic en nodo para seleccionar  ·  Clic en espacio vacío para agregar");
